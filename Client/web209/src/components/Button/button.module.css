@@ -1,0 +1,7 @@
+.primary {
+    @apply duration-300 text-white py-2 px-[46px] bg-btn border-[1px] border-btn hover:bg-white hover:text-btn
+}
+
+.secondary {
+    @apply duration-300 text-white py-2 px-[46px] bg-blue-500 border-[1px] border-blue-500 hover:bg-white hover:text-blue-500 
+}
