@@ -32,7 +32,9 @@ const FeedbackHandler = async (req, res) => {
                 const feedbackCount = await FeedBack.countDocuments({ targetId: targetId });
 
                 const rates = await FeedBack.distinct("rate", { targetId: targetId });
+
                 const totalRate = rates.reduce((initValute, Currentvalue)=>initValute + Currentvalue,0)
+                
                 const updatedProduct = await Product.findOneAndUpdate(
                     { _id: targetId },
                     { rating: totalRate / feedbackCount},

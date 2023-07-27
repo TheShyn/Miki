@@ -1,10 +1,12 @@
 import RatingPreview from '@/components/RatingPreview';
-import React, { useState } from 'react'
+import { useState } from 'react';
+import { AiFillStar } from 'react-icons/ai';
 import FeedbackContainer from '../FeedbackContainer';
-import { AiOutlineStar, AiFillStar } from 'react-icons/ai'
-type Props = {}
+type Props = {
+    id:string
+}
 
-export default function MoreDetail({ }: Props) {
+export default function MoreDetail({ id }: Props) {
     const Tabs = ['Mô tả', 'Bảo hành và Hoàn trả', 'Vận chuyển', `Đánh giá`];
     const Rates = ['Tất cả', `5 Sao`, `4 Sao`, `3 Sao`, `2 Sao`, `1 Sao`];
     const [tabIndex, setTabIndex] = useState(3);
@@ -15,7 +17,7 @@ export default function MoreDetail({ }: Props) {
     };
     return (
         <div>
-            <div className="mt-[70px] mx-[50px] flex flex-wrap justify-between gap-4">
+            <div className="mt-[70px] mx-0 md:mx-[50px] flex flex-wrap justify-between gap-4">
                 {Tabs.map((tab, index) => (
                     <span
                         onClick={() => {
@@ -24,15 +26,15 @@ export default function MoreDetail({ }: Props) {
                         key={tab}
                         className={
                             tabIndex == index
-                                ? 'text-xl font-bold text-primary/1 underline underline-offset-8 mr-[120px] cursor-not-allowed'
-                                : 'text-xl font-bold text-Neutral/3 mr-[120px] cursor-pointer'
+                                ? 'text-xl font-bold text-primary/1 underline underline-offset-8  cursor-not-allowed'
+                                : 'text-xl font-bold text-Neutral/3  cursor-pointer'
                         }
                     >
                         {tab}
                     </span>
                 ))}
             </div>
-            <div className="mt-[44px] ml-[80px] relative mx-[50px]">
+            <div className="mt-[44px]  mx-[20px] md:mx-[50px]">
                 <div className={tabIndex == 0 ? 'block' : 'hidden'}>
                     <h3 className="text-xl font-bold mb-2">Sản phẩm:</h3>
                     <p className="text-justify text-[15px]">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
@@ -96,7 +98,7 @@ export default function MoreDetail({ }: Props) {
                     <div>
                         <h3 className="text-xl font-bold mb-2">Lưu ý: </h3>
                         <p className="text-red-500 text-lg">
-                            Sản pẩm không còn nguyên vẹn hoặc mất hóa đơn, Miki sẽ thâu mua lại với 80% giá trị sản phẩm.
+                            Sản phẩm không còn nguyên vẹn hoặc mất hóa đơn, Miki sẽ thâu mua lại với 80% giá trị sản phẩm.
                         </p>
                         <p className="mt-3 text-red-500 text-lg">
                             Các sản phẩm trang sức bạc, mạ vàng, vòng đá, dây da các loại, chuỗi ngọc trai: Miki không mua lại!
@@ -106,7 +108,7 @@ export default function MoreDetail({ }: Props) {
                 <div className={tabIndex == 2 ? 'block' : 'hidden'}>
                     <h3 className="text-xl font-bold mb-2">Chính sách vận chuyển</h3>
                     <p>Với đối tác giao hàng uy tín, có mua bảo hiểm hàng hóa, thời gian giao hàng nhanh và đúng hẹn:</p>
-                    <table className="table-fixed border-collapse border-primary-text border ml-[90px] mt-6">
+                    <table className="table-fixed border-collapse border-primary-text border  mt-6">
                         <thead>
                             <tr>
                                 <th className="font-bold text-left text-primary/1 border-collapse border-primary-text border w-[200px] p-3">
@@ -133,19 +135,19 @@ export default function MoreDetail({ }: Props) {
                 </div>
                 <div className={tabIndex == 3 ? '' : 'hidden'}>
                     <div className="flex gap-5 md:gap-[100px] flex-col lg:flex-row">
-                        <div className="w-1/3">
+                        <div className="w-full md:w-1/3">
                             <h3 className="text-xl font-bold mb-2">Đánh giá sản phẩm</h3>
                             <div className="flex">
                                 {/* {!product.rating.rate ? ( */}
                                 {/* <span>Chưa có đánh giá</span> */}
-                                <div>
+                                <div className='hidden md:block'>
                                     <RatingPreview />
                                 </div>
 
                             </div>
                         </div>
                         <div className='flex flex-col'>
-                            <div className="flex flex-wrap">
+                            <div className="flex flex-wrap justify-center md:justify-between">
                                 {Rates.map((rate, index) => (
                                     <span
                                         onClick={() => {
@@ -154,8 +156,8 @@ export default function MoreDetail({ }: Props) {
                                         key={rate}
                                         className={
                                             tabRateIndex == index
-                                                ? 'px-6 py-2 bg-white border rounded-8 border-primary/1 text-primary/1 mr-6 mb-6 cursor-not-allowed'
-                                                : 'px-6 py-2 bg-white border rounded-8 text-Neutral/3 border-Neutral/3 mr-6 mb-6 cursor-pointer'
+                                                ? 'px-6 py-2 bg-white border rounded-8 border-primary/1 text-primary/1  mb-6 cursor-not-allowed'
+                                                : 'px-6 py-2 bg-white border rounded-8 text-Neutral/3 border-Neutral/3  mb-6 cursor-pointer'
                                         }
                                     >
                                         {rate}
@@ -163,36 +165,36 @@ export default function MoreDetail({ }: Props) {
                                 ))}
                             </div>
                             <div className='my-5'>
-                                <div className="rating flex gap-5 mb-4">
+                                <div className="rating flex  gap-3 md:gap-5 mb-4">
                                     <div>
                                         <label htmlFor="value1"><AiFillStar className={`star-icon  text-[30px] ${star >= 1 ? 'text-yellow-500' : 'text-slate-400'}`} /></label>
                                         <input hidden type="radio" id='value1' value='1' name="rating-1"
-                                            checked={star === 1}
-                                            onClick={handleRatingChange} />
+                                            checked={star === 1 ? true : false}
+                                            onChange={handleRatingChange} />
                                     </div>
                                     <div>
                                         <label htmlFor="value2"><AiFillStar className={`star-icon text-[30px]  ${star >= 2 ? 'text-yellow-500' : 'text-slate-400'}`} /></label>
                                         <input hidden type="radio" id='value2' value='2' name="rating-1"
-                                            checked={star === 1}
-                                            onClick={handleRatingChange} />
+                                            checked={star === 2 ? true : false}
+                                            onChange={handleRatingChange} />
                                     </div>
                                     <div>
                                         <label htmlFor="value3"><AiFillStar className={`star-icon text-[30px]  ${star >= 3 ? 'text-yellow-500' : 'text-slate-400'}`} /></label>
                                         <input hidden type="radio" id='value3' value='3' name="rating-1"
-                                            checked={star === 1}
-                                            onClick={handleRatingChange} />
+                                            checked={star === 3 ? true : false}
+                                            onChange={handleRatingChange} />
                                     </div>
                                     <div>
                                         <label htmlFor="value4"><AiFillStar className={`star-icon text-[30px]  ${star >= 4 ? 'text-yellow-500' : 'text-slate-400'}`} /></label>
                                         <input hidden type="radio" id='value4' value='4' name="rating-1"
-                                            checked={star === 1}
-                                            onClick={handleRatingChange} />
+                                            checked={star === 4 ? true : false}
+                                            onChange={handleRatingChange} />
                                     </div>
                                     <div>
                                         <label htmlFor="value5"><AiFillStar className={`star-icon text-[30px]  ${star == 5 ? 'text-yellow-500' : 'text-slate-400'}`} /></label>
                                         <input hidden type="radio" id='value5' value='5' name="rating-1"
-                                            checked={star === 1}
-                                            onClick={handleRatingChange} />
+                                            checked={star === 5 ? true : false}
+                                            onChange={handleRatingChange} />
                                     </div>
 
                                 </div>
@@ -216,7 +218,7 @@ export default function MoreDetail({ }: Props) {
                                             </div>
                                             <button type="button" data-tooltip-target="tooltip-fullscreen" className="p-2 text-gray-500 rounded cursor-pointer sm:ml-auto hover:text-gray-900 hover:bg-gray-100 ">
                                                 <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 19">
-                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 1h5m0 0v5m0-5-5 5M1.979 6V1H7m0 16.042H1.979V12M18 12v5.042h-5M13 12l5 5M2 1l5 5m0 6-5 5" />
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 1h5m0 0v5m0-5-5 5M1.979 6V1H7m0 16.042H1.979V12M18 12v5.042h-5M13 12l5 5M2 1l5 5m0 6-5 5" />
                                                 </svg>
                                                 <span className="sr-only">Full screen</span>
                                             </button>
@@ -235,7 +237,7 @@ export default function MoreDetail({ }: Props) {
                                     </button>
                                 </form>
                             </div>
-                            <FeedbackContainer />
+                            <FeedbackContainer id= {id}/>
                         </div>
 
                     </div>

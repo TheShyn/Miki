@@ -1,52 +1,30 @@
-import React from 'react'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import BannerProducts from '@/assets/static/BannerProducts/banner.jpg'
 import Breadcum from '@/components/Breadcum'
-import SortProduct from '@/sections/Products/Sort'
-import ProductItems from '@/components/ProductItems'
-import Pagination from '@/components/Panigation'
 import Page from '@/components/Page'
+import Pagination from '@/components/Panigation'
+import ProductItems from '@/components/ProductItems'
+import { getAllProducts } from '@/instance/Products'
+import SortProduct from '@/sections/Products/Sort'
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
 type Props = {}
-
 export default function Products({ }: Props) {
-  const products = [
-    {
-      name: 'Banner Products',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-    {
-      name: 'Banner Products2',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-    {
-      name: 'Banner Products3',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-    {
-      name: 'Banner Products4',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-    {
-      name: 'Banner Products45',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-    {
-      name: 'Banner Products4ds',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-  ]
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const products = useAppSelector(state => state.products)
+  console.log(products);
+  
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    searchParams.set('page', String(null));
+    let tempPage:any
+    let category: string | undefined;
+    if (searchParams.has('page')) tempPage = searchParams.get('page');
+    if (searchParams.has('category')) category = searchParams.get('category') || "";
+    dispatch(getAllProducts({page:tempPage || null, limit:1, category})) 
+  }, [location]);
   return (
     <Page title='Tất cả sản phẩm'>
       <div className="app">
@@ -64,8 +42,8 @@ export default function Products({ }: Props) {
           ]}
           />
           <SortProduct />
-          <ProductItems data={products} />
-          <Pagination pageCount={4} />
+          <ProductItems data={products.products} />
+          <Pagination pageCount={products.totalPages || 0} scroll={600}/>
         </div>
       </div>
     </Page>

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 export default function Login() {
   return (
     <Page title="Login">
-        <div className="app py-[50px] bg-bgr" style={{background: `url("${BackGround}") top center `}}>
+        <div className="app py-[100px] bg-bgr" style={{background: `url("${BackGround}") top center `}}>
           <div className="flex justify-center">
             <div className="flex">
               {/* Image */}

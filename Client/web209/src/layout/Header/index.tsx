@@ -1,6 +1,15 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { AiOutlineShoppingCart, AiOutlineBars, AiOutlineSearch, AiOutlineBell, AiOutlineUser } from 'react-icons/ai'
+import { useEffect, useState } from 'react'
 export default function Header() {
+    const [page, setPage] = useState("/")
+    const location = useLocation()
+    useEffect(()=>{
+        const get = `${location.pathname.split("/").pop()}`
+        setPage(get || '/');
+        
+    },[location])
+    
     return (
         <>
             <header>
@@ -9,17 +18,17 @@ export default function Header() {
                         <ul className="md:flex md:justify-between hidden md:gap-[10px] lg:gap-[42px]">
                             <li className="py-[4px]">
                                 <Link to="/">
-                                    <a className="text-16 hover:text-3rd-text duration-500 font-bold">Trang chủ</a>
+                                    <a className={`text-16 hover:text-3rd-text  ${page == '/' ? 'font-bold': ''}`}>Trang chủ</a>
                                 </Link>
                             </li>
                             <li className="py-[4px]">
                                 <Link to="/products">
-                                    <a className="text-16 hover:text-3rd-text duration-500 ">Sản phẩm</a>
+                                    <a className={`text-16 hover:text-3rd-text  ${page == 'products' ? 'font-bold': ''}`}>Sản phẩm</a>
                                 </Link>
                             </li>
                             <li className="py-[4px]">
                                 <Link to="/aboutus/brandandhistory">
-                                    <a className="text-16 hover:text-3rd-text duration-500">Về chúng tôi</a>
+                                    <a className={`text-16 hover:text-3rd-text  ${page == 'brandandhistory' ? 'font-bold': ''}`}>Về chúng tôi</a>
                                 </Link>
                             </li>
                         </ul>
@@ -53,7 +62,7 @@ export default function Header() {
 
                             </li>
                             <li className='hidden lg:block'>
-                                <Link to="/aboutus/brandandhistory">
+                                <Link to="/admin/products">
                                     <span className='text-[20px]'>
                                         <AiOutlineShoppingCart />
 

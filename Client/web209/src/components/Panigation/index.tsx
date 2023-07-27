@@ -1,15 +1,26 @@
 import ReactPaginate from 'react-paginate';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 type Props = {
-    pageCount:number
+  pageCount: number ,
+  scroll?: number
 }
 
-export default function Pagination({ pageCount }: Props) {
-    // const router = useRouter();
+export default function Pagination({ pageCount, scroll = 0 }: Props) {
+  const location = useLocation();
+  const { pathname } = location;
+  const searchParams = new URLSearchParams(location.search);
+  const navigate = useNavigate()
 
-    const handlePageClick =(e:any) => {
-        // filterSearch({ router, page: e.selected + 1});
-        
-      }
+
+  const handlePageClick = (e: any) => {
+    const newPage = e.selected + 1
+    searchParams.set('page', String(newPage));
+    const newSearch = searchParams.toString();
+    const newUrl = `${pathname}?${newSearch}`;
+    navigate(newUrl)
+    if(scroll) window.scrollTo({ top: scroll, behavior: 'smooth' });
+  }
   return (
     <div>
       <ReactPaginate

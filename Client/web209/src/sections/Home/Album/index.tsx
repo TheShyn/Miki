@@ -2,7 +2,7 @@ import Button from '@/components/Button'
 import AlbumImg from '@/assets/static/Album/home-latest-collection.png'
 export default function AlbumLastest() {
     return (
-        <div className="h-[629px] w-full relative mt-[150px] mobile:mt-[72px] text-white " style={{ background: `url("${AlbumImg}") top center / cover no-repeat`, paddingTop: '50px' }}>
+        <div className="h-[629px] w-full relative mt-[100px] md:mt-[150px] mobile:mt-[72px] text-white " style={{ background: `url("${AlbumImg}") top center / cover no-repeat`, paddingTop: '50px' }}>
             <div className='absolute left-[10%] top-[20%]'>
                 <h1 className='text-[30px] md:text-[40px] mb-[30px]'>Bộ sưu tập mới nhất</h1>
                 <div className='mb-[30px]'>

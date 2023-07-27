@@ -3,62 +3,64 @@ import Categories from "../../models/Categories";
 import Product from "../../models/Product";
 import SchemaProduct from "../../validate/SchemaProduct";
 import { v2 as cloudinary } from 'cloudinary';
-const  AddProduct = async (req, res) => {
+const AddProduct = async (req, res) => {
     await connect()
     const method = req.method
-    const data = req.body        
+    const data = req.body
+    console.log(data);
+    
     switch (method) {
         case 'POST':
             try {
                 
-
+                
                 let { error } = SchemaProduct.validate(data)
                 
-                
+
                 if (error) {
-                    // if(data?.images && data.images.length){
-                    //     const arrayImg = data.images.map(item=>{
-                    //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
-                    //         return "products/"+fileName
-                    //     })
-                    //     cloudinary.api.delete_resources(arrayImg)   
-                    // }
+                    if(data?.images && data.images.length){
+                        const arrayImg = data.images.map(item=>{
+                            const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
+                            return "products/"+fileName
+                        })
+                        cloudinary.api.delete_resources(arrayImg)   
+                    }
                     return res.status(400).send({ message: error.message });
 
                 }
-                
+
                 const { name, categoryId } = data
                 const product = await Product.findOne({ name })
-                
+
                 if (product) {
-                    // if(data?.images && data.images.length){
-                    //     const arrayImg = data.images.map(item=>{
-                    //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
-                    //         return "products/"+fileName
-                    //     })
-                    //     cloudinary.api.delete_resources(arrayImg)   
-                    // }
+                    if(data?.images && data.images.length){
+                        const arrayImg = data.images.map(item=>{
+                            const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
+                            return "products/"+fileName
+                        })
+                        cloudinary.api.delete_resources(arrayImg)   
+                    }
                     return res.status(400).send({ message: 'Product is exists' })
                 }
 
-                const isCate = await Categories.findOne({_id: categoryId})
-                if(!isCate){
-                    // if(data?.images && data.images.length){
-                    //     const arrayImg = data.images.map(item=>{
-                    //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
-                    //         return "products/"+fileName
-                    //     })
-                    //     cloudinary.api.delete_resources(arrayImg)   
-                    // }
+                const isCate = await Categories.findOne({ _id: categoryId })
+                if (!isCate) {
+                    if(data?.images && data.images.length){
+                        const arrayImg = data.images.map(item=>{
+                            const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
+                            return "products/"+fileName
+                        })
+                        cloudinary.api.delete_resources(arrayImg)   
+                    }
                     return res.status(400).send({ message: 'Cate not found' })
-                }      
+                }
                 // const newData ={
                 //     ...data,
                 //     img:data.images[0]
                 // }
                 const item = await Product.create(data)
                 // console.log(item.name);
-                
+
                 await Categories.findByIdAndUpdate(item.categoryId, {
                     $addToSet: {
                         products: item._id,
@@ -68,15 +70,15 @@ const  AddProduct = async (req, res) => {
 
             } catch (error) {
                 console.log('freking error');
-                // if(data?.images && data.images.length){
-                //     const arrayImg = data.images.map(item=>{
-                //         console.log(item);
-                //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
-                //         return "products/"+fileName
-                //     })
-                //     cloudinary.api.delete_resources(arrayImg)   
-                // }
-                
+                if(data?.images && data.images.length){
+                    const arrayImg = data.images.map(item=>{
+                        console.log(item);
+                        const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
+                        return "products/"+fileName
+                    })
+                    cloudinary.api.delete_resources(arrayImg)   
+                }
+
                 return res.send({ message: error });
             }
             break;

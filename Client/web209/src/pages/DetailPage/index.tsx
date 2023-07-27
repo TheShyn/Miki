@@ -1,43 +1,39 @@
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import Breadcum from '@/components/Breadcum'
 import Page from '@/components/Page'
 import ProductItems from '@/components/ProductItems'
+import { getAllProducts, getProduct, getProduct1, getProducts } from '@/instance/Products'
 import MoreDetail from '@/sections/Product/MoreDetail'
 import ProductDetail from '@/sections/Product/ProductDetail'
-import React from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
 
 export default function DetailPage() {
-  const products = [
-    {
-      name: 'Banner Products',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-    {
-      name: 'Banner Products2',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-    {
-      name: 'Banner Products3',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-    {
-      name: 'Banner Products4',
-      price: '123.000',
-      img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-      discount: 10
-    },
-  ]
-  const product = {
-    name: 'Banner Products',
-    price: '123.000',
-    img: 'https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75',
-    discount: 10
-  }
+  const { id } = useParams();
+  const data = useAppSelector((state:any) => state.products)
+  const dispatch = useAppDispatch()  
+  // const [product, setProduct] = useState({})
+  const [relateProducts, setRelateProducts] = useState([])
+  const location = useLocation()
+  const { pathname } = location;
+
+
+  useEffect(()=>{
+    window.scrollTo({ top: 0 });
+    dispatch(getProduct1(`${id}`))
+    const data = getProduct(id)
+    data.then((res)=>{
+      const relateProduct = getProducts()
+      relateProduct.then((data)=>{
+        const relate= data.data.data
+        setRelateProducts(relate.filter((item:any)=>item.slug !== id));
+      })
+    })
+
+    
+
+    
+  },[pathname])
   return (
     <Page title='Tên sản phẩm' >
 
@@ -53,13 +49,13 @@ export default function DetailPage() {
               label: 'Tất cả sản phẩm '
             }
           ]} />
-          <ProductDetail product={product} />
-          <MoreDetail />
+          <ProductDetail product={data.product} />
+          <MoreDetail id={data.product._id}/>
           {/* <MoreDetail product={product} feedbacks={feedbacks} /> */}
           <div className=" text-[30px] text-2nd-text font-bold  mt-[60px]">
             Có thể bạn cũng thích
           </div>
-          <ProductItems data={products} />
+          <ProductItems data={relateProducts} />
         </div>
       </div>
     </Page>

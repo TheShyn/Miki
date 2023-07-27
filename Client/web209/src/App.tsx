@@ -10,11 +10,22 @@ import Register from './pages/Auth/Register'
 import ForgotPass from './pages/Auth/ForgotPass'
 import Cart from './pages/Cart'
 import Payment from './pages/Payment'
+import LayoutAdmin from './layout/Admin'
+import Dasboard from './pages/Admin/Dashboard'
+import ProductsMana from './pages/Admin/Products'
+import EditProduct from './pages/Admin/Products/Add'
+import AddProduct from './pages/Admin/Products/Add'
+import UpdateProduct from './pages/Admin/Products/Update'
+import CategoriesMana from './pages/Admin/Categories'
+import AddCate from './pages/Admin/Categories/Add'
+import UpdateCate from './pages/Admin/Categories/Update'
+import UserMana from './pages/Admin/User'
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<LayoutClient/>}>
+          {/* client */}
           <Route index element={<Home />} />
           <Route path='products' element={<Products />} />
           <Route path='products/:id' element={<DetailPage />} />
@@ -22,11 +33,26 @@ function App() {
           <Route path='cart' element={<Cart />} />
           <Route path='payment' element={<Payment />} />
         </Route>
+        {/* auth */}
         <Route path='auth'>
           <Route index element={<Login/>}/>
           <Route path='login' element={<Login/>}/>
           <Route path='register' element={<Register/>}/>
           <Route path='forgotpassword' element={<ForgotPass/>}/>
+        </Route>
+        {/* admin */}
+        <Route path = 'admin' element={<LayoutAdmin/>}>
+          <Route index element={<Dasboard/>} />
+          <Route path='products' element={<ProductsMana/>} />
+          <Route path='products/add' element={<AddProduct/>} />
+          <Route path='products/edit/:id' element={<UpdateProduct/>} />
+
+          <Route path='categories' element={<CategoriesMana/>} />
+          <Route path='categories/add' element={<AddCate/>} />
+          <Route path='categories/edit/:id' element={<UpdateCate/>} />
+
+
+          <Route path='users' element={<UserMana/>} />
         </Route>
       </Routes>
     </>

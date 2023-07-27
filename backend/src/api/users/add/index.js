@@ -5,7 +5,7 @@ import { signupSchema } from "../../../validate/SchemaSignup";
 const AddUser = async (req, res) => {
 
     const method = req.method
-    const { name, email, password,birthday,gender,phoneNumber } = req.body    
+    const { firstName, lastName, email, password,birthday } = req.body    
     await connect()
     switch (method) {
         case "POST":
@@ -27,9 +27,8 @@ const AddUser = async (req, res) => {
                 
                 const user = await Users.create({
                     birthday,
-                    gender,
-                    phoneNumber : phoneNumber ? phoneNumber : '',
-                    name,
+                    firstName,
+                    lastName,
                     email,
                     password: hashedPassword,
                     role: "user"

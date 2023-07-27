@@ -1,13 +1,34 @@
 import Button from '@/components/Button'
 import FormProviderBox from '@/components/hook-form/FormProviderBox'
 import InputField from '@/components/hook-form/InputField'
+import { register } from '@/instance/Auth';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
 export default function FormRegisterSection() {
-    const schema = yup.object().shape({})
+    const [err, setErr] = useState('')
+    const schema = yup.object().shape({
+        firstName: yup.string().required('Vui lòng nhập họ'),
+        lastName: yup.string().required('Vui lòng nhập tên'),
+        birthday: yup.string().required('Vui lòng nhập'),
+        email: yup
+            .string()
+            .required('Vui lòng nhập email')
+            .matches(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                'Email không tồn tại'
+            ),
+        password: yup.string().trim().required('Vui lòng nhập mật khẩu').min(8, 'Nhập mật khẩu từ 6 đến 8 kí tự'),
+        confirmPassword: yup
+            .string()
+            .trim()
+            .required('Vui lòng nhập lại mật khẩu')
+            .oneOf([yup.ref('password')], 'Mật khẩu nhập lại không khớp'),
+        //   check: yup.array().typeError('Bạn chưa đồng ý với điều khoản').min(1, 'Bạn chưa đồng ý với điều khoản'),
+    })
     const methods = useForm({
         reValidateMode: 'onBlur',
         resolver: yupResolver(schema),
@@ -15,11 +36,27 @@ export default function FormRegisterSection() {
     const { handleSubmit, reset } = methods;
     const onSubmit = (data: any) => {
         console.log(data);
+        if (data) {
+            register(data)
+                .then((response) => {
+                    console.log(response);
 
+                })
+                .catch((error) => {
+                    const { message } = error?.response?.data
+                    setErr(message);
+
+                })
+        }
     }
     return (
         <div>
             {/* Form */}
+            {err ?
+                <span className='mt-3 align-middle flex justify-center bg-red-200 mx-[30px] py-2 text-red-600'>{err}</span>
+                :
+                undefined
+            }
             <FormProviderBox className={'px-10 mt-6 '} methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex mt-[32px] justify-between">
                     {/* FirstName */}
@@ -38,7 +75,7 @@ export default function FormRegisterSection() {
                     />
                     {/* Date */}
                     <InputField
-                        name="dateOfBirth"
+                        name="birthday"
                         styleInput="w-[128px] h-12 p-3 rounded-lg border-border-1 border-[1px] border-solid text-xs"
                         // styleMessage="text-msgEr text-sm"
                         placeholder="DD/MM/YY"
@@ -69,14 +106,14 @@ export default function FormRegisterSection() {
                     type="password"
                 />
                 {/* Checkbox agree terms */}
-                <div className="mt-6 flex items-center">
+                {/* <div className="mt-6 flex items-center">
                     <div className="w-[37px]">
                         <InputField
                             name="check"
                             styleInput="cursor-pointer w-6 h-6 rounded-[4px] ml-1 mr-[9px]"
                             // styleMessage="text-msgEr text-sm"
                             type="checkbox"
-                            
+
                         />
                     </div>
                     <label className="">
@@ -84,7 +121,7 @@ export default function FormRegisterSection() {
                         <Link to='/auth/register' className='font-medium'> điều khoản chính sách</Link>{' '}
                         của Miki Jewelry
                     </label>
-                </div>
+                </div> */}
                 {/* <span className="text-msgEr text-sm">{errors['check']?.message}</span> */}
                 {/* Button register */}
                 <Button primary

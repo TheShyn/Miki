@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import Route from "./routes/index.js";
 import cors from "cors"
+import connect from "./config/db/index.js";
 
 dotenv.config();
 //connect to db

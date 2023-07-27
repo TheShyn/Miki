@@ -2,7 +2,7 @@ import Button from '@/components/Button'
 import AboutImg from '@/assets/static/AboutImg/AboutImg.jpg'
 export default function AboutSection() {
   return (
-    <div className="grid grid-cols-none grid-rows-2 md:grid-cols-2 md:grid-rows-none md:px-[50px] gap-[50px] mt-[150px] ">
+    <div className="grid grid-cols-none grid-rows-2 md:grid-cols-2 md:grid-rows-none md:px-[50px] gap-[50px] mt-[100px] md:mt-[150px] ">
       <div className="font-bold">
         <h1 className="text-32 leading-10 ">Về chúng tôi</h1>
         <h2 className="font-plf text-5xl leading-[58px] mt-[56px]">“Ngày mai phải tốt hơn ngày hôm nay”</h2>

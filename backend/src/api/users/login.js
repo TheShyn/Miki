@@ -15,14 +15,18 @@ const Login = async (req, res) => {
     switch (method) {
         case "POST":
             try {
+                
+                
                 const {error} = loginSchema.validate(data)
                 if(error){
                     return res.status(400).send({ message: error?.details[0].message })
                 }
                 const user = await Users.findOne({ email: data.email }).populate("cart");
                 if (!user) {
+                    console.log('dasdasdasd');
                     return res.status(400).send({ message: "user not found" });
                 }
+                console.log('dasdasdasd');
                 if(user.status === 'disabled'){
                     return res.status(400).send({ message: "your account got ban" });
 
@@ -33,7 +37,7 @@ const Login = async (req, res) => {
                     return res.status(400).send({ message: "Mật khẩu không đúng" })
                 }
                 const token = jwt.sign({ _id: user._id }, SECRET_CODE, {
-                    expiresIn: "1d",
+                    expiresIn: "10d",
                 });
                 user.password = undefined;
                 if (user && validPass) {

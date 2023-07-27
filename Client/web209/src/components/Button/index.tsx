@@ -42,9 +42,9 @@ export default function Button({ style = "",
   }
 
   return (
-    <Link to={to.length ? to : ''}>
+    // <Link to={to.length ? to : ''}>
       <button  className={`rounded-lg leading-6 text-base flex items-center 
-    justify-center cursor-pointer font-bold   ${classes} ${style}`} {...passProps}>
+    justify-center cursor-pointer font-bold   ${classes} ${style}`} {...passProps} >
         {leftIcon && <span className={`mr-2 ${styleLeftIcon}`}>{leftIcon}</span>}
 
         <span className={styleContent}>{content}</span>
@@ -52,6 +52,6 @@ export default function Button({ style = "",
         {rightIcon && <span className={`ml-2 ${styleRightIcon}`}>{rightIcon}</span>}
       </button>
 
-    </Link>
+    // </Link>
   )
 }

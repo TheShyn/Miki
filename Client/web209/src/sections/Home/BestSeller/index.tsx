@@ -3,7 +3,7 @@ import ItemProduct from '@/components/Item'
 
 export default function BestSeller() {
     return (
-        <div className={` mt-[150px]`}>
+        <div className={` mt-[100px] md:mt-[150px]`}>
             <div className="flex justify-between flex-wrap" >
                 <h1 className="text-32 font-bold mx-auto md:mx-0 flex flex-col md:flex-row md:justify-center mb-[15px] md:mb-[0] z-10">Sản phẩm nổi bật</h1>
                 <Button primary style="py-2 px-[46px] hover-btn-primary w-full md:max-w-[200px] z-10 " content=' Xem Tất cả' />
