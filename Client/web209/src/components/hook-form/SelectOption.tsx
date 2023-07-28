@@ -1,4 +1,3 @@
-import React from 'react'
 import { useFormContext } from 'react-hook-form';
 export function SelectOption({ name, label, styleLabel, styleInput,
     styleMessage, className, passwordErr, userNameErr, valueOption = [], mailErr, ...passProps }:any) {

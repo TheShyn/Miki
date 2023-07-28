@@ -31,3 +31,7 @@ export const authLogin = createAsyncThunk("auth/login", async(data: PropsLogin)=
    
 })
 
+
+
+
+

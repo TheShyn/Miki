@@ -3,11 +3,13 @@ import FormLoginSection from '@/sections/Auth/FormLoginSection'
 import ImgLogin from '@/assets/static/Login/Login.jpg'
 import BackGround from '@/assets/static/Login/bg.avif'
 import { Link } from 'react-router-dom'
+import IsLogin from '@/components/IsLogin'
 
 export default function Login() {
   return (
-    <Page title="Login">
-        <div className="app py-[100px] bg-bgr" style={{background: `url("${BackGround}") top center `}}>
+    <IsLogin>
+      <Page title="Login">
+        <div className="app py-[100px] bg-bgr" style={{ background: `url("${BackGround}") top center ` }}>
           <div className="flex justify-center">
             <div className="flex">
               {/* Image */}
@@ -33,5 +35,6 @@ export default function Login() {
           {/* Decoration background */}
         </div>
       </Page>
+    </IsLogin>
   )
 }

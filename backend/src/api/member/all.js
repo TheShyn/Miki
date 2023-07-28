@@ -11,7 +11,7 @@ const getAllUser = async(req,res)=>{
     switch (method) {
         case "GET":
             try {
-                const data = await Users.find({})
+                const data = await Users.find({}).select("-password")
                 if(!data){
                     return res.status(404).json({
                         message:"Can't not get users",

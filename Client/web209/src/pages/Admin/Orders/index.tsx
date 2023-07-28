@@ -1,30 +1,43 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { getAllUsers } from '@/instance/User'
+import { getAllOrder, updateOrder } from '@/instance/Cart'
 import { useEffect } from 'react'
-import { AiOutlinePlus, AiOutlineSearch } from "react-icons/ai"
-import { Link } from 'react-router-dom'
+import { AiOutlineSearch } from "react-icons/ai"
 type Props = {}
 
-export default function UserMana({ }: Props) {
-    const data = useAppSelector((state: any) => state.user)
+export default function OrderMana({ }: Props) {
+    const data = useAppSelector((state: any) => state.cart)
     console.log(data);
-
     const dipatch = useAppDispatch()
-    const handleDelete = (id: string) => {
+    const status = [
+        {
+            name: "PENDING"
+        },
+        {
+            name: "SHIPPING"
+        },
+        {
+            name: "SUCCESS"
+        },
+        {
+            name: "CANCELLED"
+        },
+    ]
 
-        const a = confirm("Bạn có muốn loại sản phẩm này không ? ")
-        if (a) {
-            // dipatch(deleteCate(id))
-
+    const handleChangeStatus = (e:any,id:any)=>{
+        console.log(e.target.value);
+        console.log(id);
+        const data:any = {
+            status : e.target.value
         }
+        dipatch(updateOrder({id, data}))
     }
-    useEffect(() => {
-        dipatch(getAllUsers())
-    }, [])
+    useEffect(()=>{
+        dipatch(getAllOrder())
+    },[])
     return (
         <div className='mt-[50px]'>
             <div className='flex justify-between items-center flex-wrap'>
-                <h1 className='mb-5 text-2xl'>Quản lí sản phẩm</h1>
+                <h1 className='mb-5 text-2xl'>Quản lí đơn hàng</h1>
                 <div className='bg-white flex items-center px-2 rounded-8 py-1 border border-1 boder-#ccc'>
                     <input placeholder='Search...' className='text-black outline-none border-none' type="text" />
                     <AiOutlineSearch className='text-black' />
@@ -35,50 +48,42 @@ export default function UserMana({ }: Props) {
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
                         <tr>
                             <th scope="col" className="px-6 py-3">
-                                Name
+                                Mã
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Avatar
+                                Người dùng
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Email
+                                Số điện thoại
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Status
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Action
+                               Trạng thái
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {data.users.map((item: any, index: string) => {
+                        {data.carts.map((item: any, index: string) => {
                             return (
 
                                 <tr key={index} className="bg-white border-b ">
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                                        {item.firstName + " " + item.lastName}
+                                        {item._id.slice(0,5)}
                                     </th>
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                                        <img className='max-w-[30px]' src={item?.avatar} alt="" />
+                                        {item.name}
                                     </th>
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                                        {item.email}
+                                        {item.phoneNumber}
                                     </th>
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                                        {item.status}
+                                        <select onChange={(e)=>handleChangeStatus(e,item._id)} name="" defaultValue={item.status} disabled = {item.status=="SUCCESS" || item.status=="CANCELLED" ? true : false} id="">
+                                            {status.map((item:any)=>{
+                                                return (
+                                                    <option value={item.name}>{item.name}</option>
+                                                )
+                                            })}
+                                        </select>
                                     </th>
-
-                                    <td className="px-6 py-4">
-                                        <div className='flex flex-wrap gap-3'>
-                                            <button className={`${item._id === '64822a45fe4657527476ecd9' ? 'hidden' : ''}`} onClick={() => handleDelete(item._id)}>Delete</button>
-                                            <button >
-                                                <Link to={`/admin/users/edit/${item?._id}`}>
-                                                    Edit
-                                                </Link>
-                                            </button>
-                                        </div>
-                                    </td>
                                 </tr>
                             )
                         })}

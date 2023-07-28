@@ -8,6 +8,8 @@ type Props = {
 }
 
 export default function FormProviderBox({ methods, onSubmit, children, className }: Props) {
+    
+    
     return (
         <FormProvider {...methods}>
             <form className={className} onSubmit={onSubmit}>

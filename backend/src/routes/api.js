@@ -11,9 +11,9 @@ const routerApi = express.Router();
 
 routerApi.get("/", GetAll)
 routerApi.get("/:slug",getDetail)
-routerApi.patch("/:id", UpdateProduct)
-routerApi.delete("/:id",DeleteProduct)
-routerApi.post("/", AddProduct)
+routerApi.patch("/:id",checkPermission, UpdateProduct)
+routerApi.delete("/:id",checkPermission,DeleteProduct)
+routerApi.post("/",checkPermission, AddProduct)
 
 
 export default routerApi;

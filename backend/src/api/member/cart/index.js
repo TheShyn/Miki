@@ -50,12 +50,12 @@ const cartHandle = async function (req, res) {
                     return res.status(200).send({ message: "Add cart successfully", data: dataUpdate })
 
                 }
-                await Users.findByIdAndUpdate({ _id: id }, {
+                const user = await Users.findByIdAndUpdate({ _id: id }, {
                     $addToSet: {
                         cart: data,
-                    },
-                });
-                return res.status(200).send({ message: "Add cart successfully", data: data })
+                    }, 
+                },{new:true});
+                return res.status(200).send({ message: "Add cart successfully", data: user })
 
             } catch (error) {
                 return res.status(500).json({

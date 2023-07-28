@@ -12,10 +12,11 @@ type Props = {
   passPort?: any,
   isArray?: boolean,
   onChange?: (e: any) => void,
-  mutiple?: boolean
+  mutiple?: boolean,
+  readOnly?: boolean
 }
 
-export default function InputField({type='text',className, label = '', styleInput = '',name, placeholder = '',styleLabel, isArray=false, onChange, mutiple=false }: Props) {
+export default function InputField({type='text',className, readOnly=false,label = '', styleInput = '',name, placeholder = '',styleLabel, isArray=false, onChange, mutiple=false }: Props) {
   const {
     register,
     formState: { errors },
@@ -28,7 +29,7 @@ export default function InputField({type='text',className, label = '', styleInpu
   return (
     <div className={`flex flex-col mb-6 ${className}`}>
       {label && <label className={`ml-2 mb-2 ${styleLabel}`} htmlFor={`${name}`}>{label}</label>}
-      <input type={type} {...register(name)} className={`border border-btn p-2 rounded-md ${styleInput}`} id={name} placeholder={placeholder} name={`${name}`} onChange={onChange} multiple = {mutiple}/>
+      <input readOnly = {readOnly} type={type} {...register(name)} className={`border border-btn p-2 rounded-md ${styleInput}`} id={name} placeholder={placeholder} name={`${name}`} onChange={onChange} multiple = {mutiple}/>
     <span className='text-[14px] italic text-red-600'>{isArray ?  errorDynamic : error?.message}</span>
     </div>
   )

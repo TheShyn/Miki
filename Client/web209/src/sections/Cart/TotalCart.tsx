@@ -2,7 +2,13 @@ import Button from '@/components/Button'
 import FormatPrice from '@/utils/FormatPrice'
 import React from 'react'
 
-export default function TotalCart() {
+export default function TotalCart({cart}:any) {
+    console.log(cart);
+    const totalPrice = cart.reduce((initState:any,currenIndex:any)=>{
+        return (initState?.quantity * initState?.price) + (currenIndex?.quantity * currenIndex?.price)
+    })
+    console.log(totalPrice);
+    
   return (
     <div>
     <h1 className="text-[24px] mb-[48px] font-bold">Tạm tính</h1>
@@ -15,7 +21,7 @@ export default function TotalCart() {
      border-b-solid border-b-[#D8D8D8] '>
         <div className='flex mb-[28px] justify-between'>
             <p>Giá sản phẩm </p>
-            <p className='text-[20px] font-bold text-[#000]'><FormatPrice price={10000} /></p>
+            <p className='text-[20px] font-bold text-[#000]'><FormatPrice price={totalPrice} /></p>
         </div>
         <div className='flex mb-[28px] justify-between'>
             <p>Phí giao hàng  </p>
@@ -37,7 +43,7 @@ export default function TotalCart() {
             <h3 className='font-bold text-[20px]'>Tổng</h3>
             <p className='text-[24px] font-bold text-[#92715A]'>
                 {/* <FormatPrice price={total - (total * (discount / 100)) + ship} /> */}
-                <FormatPrice price = {1234000}/>
+                <FormatPrice price = {totalPrice}/>
             </p>
         </div>
         <div className='flex justify-end'>

@@ -16,8 +16,6 @@ export default function UpdateCate({ }: Props) {
     const {id} = useParams()
     const cate = useAppSelector((state: any) => state.categories)   
     console.log(cate);
-    
-    const [loading, setLoading] = useState(false)
     const schema = yup.object().shape({
         name: yup.string().required('Nhập tên loại sản phẩm'),
  
@@ -32,7 +30,7 @@ export default function UpdateCate({ }: Props) {
     const { handleSubmit, reset, control  } = methods;
     //
     //submit
-    const onSubmit = (data: any) => {
+    const onSubmit = async (data: any) => {
         console.log(data);
         if(data){
             dispatch(updateCate({id, data}))
@@ -42,10 +40,6 @@ export default function UpdateCate({ }: Props) {
     useEffect(() => {
         dispatch(getOneCate(`${id}`))
         reset({ name: cate.category.name });    
-        console.log(cate.category);
-        console.log("dsada");
-        
-        setLoading(true)    
     }, [cate.category.name])
     return (
         <div className='mt-[50px]'>

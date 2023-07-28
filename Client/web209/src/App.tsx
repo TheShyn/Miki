@@ -20,6 +20,8 @@ import CategoriesMana from './pages/Admin/Categories'
 import AddCate from './pages/Admin/Categories/Add'
 import UpdateCate from './pages/Admin/Categories/Update'
 import UserMana from './pages/Admin/User'
+import UpdateUser from './pages/Admin/User/Update'
+import OrderMana from './pages/Admin/Orders'
 function App() {
   return (
     <>
@@ -53,6 +55,10 @@ function App() {
 
 
           <Route path='users' element={<UserMana/>} />
+          <Route path='users/edit/:id' element={<UpdateUser/>} />
+
+
+          <Route path='orders' element={<OrderMana/>} />
         </Route>
       </Routes>
     </>
