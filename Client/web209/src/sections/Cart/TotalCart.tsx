@@ -2,10 +2,8 @@ import Button from '@/components/Button';
 import FormatPrice from '@/utils/FormatPrice';
 
 export default function TotalCart({cart}:any) {
-    console.log(cart);
     const totalPrice = cart.reduce((accumulator:any, currentValue:any) => {
         const a = (accumulator + (currentValue?.quantity * currentValue?.price));
-        console.log(a);
         return accumulator + (currentValue?.quantity * currentValue?.price);
     }, 0);    
   return (

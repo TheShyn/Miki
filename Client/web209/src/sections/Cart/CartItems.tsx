@@ -1,18 +1,53 @@
-import { useAppDispatch } from '@/app/hooks';
+import { useDeleteCartMutation, useUpdateCartMutation } from '@/api/cartUser';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { decrease, increase, removeCart } from '@/slices/CartUser';
 import FormatPrice from '@/utils/FormatPrice'
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineClose } from 'react-icons/ai'
 export default function CartItems({ cart }: any) {
+    const user = useAppSelector((state:any)=>state.user)
     const dispatch = useAppDispatch()
-    const removeToCart = (id:any)=>{
-        console.log(id);
-        dispatch(removeCart(id))
+    const [deleteCart] = useDeleteCartMutation()
+    const [updateCart] = useUpdateCartMutation()
+    const removeToCart = (item:any)=>{
+        console.log(item);
+        const dataUp = {
+            size: item.size,
+            product: item.product
+        }
+        deleteCart({id: user.user._id,data:dataUp}).unwrap().then((data)=>{
+            dispatch(removeCart(item.product))
+            
+        }).catch((error)=>{
+            console.log(error);
+            
+        })
     }
-    const increaseNumber = (id:any)=>{
-        dispatch(increase(id))
+    const increaseNumber = (item:any)=>{
+        const quantity = item.quantity + 1
+        dispatch(increase(item.product))
+        updateCart({id: user.user._id, data:{product: item.product, quantity: quantity, size: item.size}})
+        .unwrap().then((data)=>{
+            console.log(data);
+            
+        })
+        .catch((error)=>{
+            console.log(error);
+            
+        })
     }
-    const decreaseNumber = (id:any)=>{
-        dispatch(decrease(id))
+    const decreaseNumber = (item:any)=>{
+        const quantity = item.quantity - 1
+        dispatch(decrease(item.product))
+        updateCart({id: user.user._id, data:{product: item.product, quantity: quantity, size: item.size}})
+        .unwrap().then((data)=>{
+            console.log(data);
+            
+        })
+        .catch((error)=>{
+            console.log(error);
+            
+        })
+        
     }
     return (
         <div className="flex flex-col">
@@ -32,7 +67,7 @@ export default function CartItems({ cart }: any) {
                                 <div>
                                     <div className='mb-8 flex justify-between items-start'>
                                         <h3 className="text-[17px] md:text-[20px] font-bold">{item.name}</h3>
-                                        <button onClick={()=>removeToCart(item.product)} className="active:bg-black active:text-white active:rounded-full">
+                                        <button onClick={()=>removeToCart(item)} className="active:bg-black active:text-white active:rounded-full">
                                             <AiOutlineClose />
                                         </button>
                                     </div>
@@ -41,12 +76,12 @@ export default function CartItems({ cart }: any) {
                                 <div className='flex items-center justify-between flex-wrap mt-3'>
                                     <div className='flex items-center '>
                                         <button className="active:bg-black active:text-white active:rounded-full"
-                                            onClick={()=>decreaseNumber(item.product)}
+                                            onClick={()=>decreaseNumber(item)}
                                         >
                                             <AiOutlineMinus />
                                         </button>
                                         <p className="text-[16px] md:text-[20px] font-bold leading-7 w-7 text-center mx-4">{item.quantity}</p>
-                                        <button onClick={()=>increaseNumber(item.product)} className="active:bg-black active:text-white active:rounded-full">
+                                        <button onClick={()=>increaseNumber(item)} className="active:bg-black active:text-white active:rounded-full">
 
                                             <AiOutlinePlus />
                                         </button>

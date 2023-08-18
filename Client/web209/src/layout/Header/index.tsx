@@ -1,17 +1,28 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AiOutlineShoppingCart, AiOutlineBars, AiOutlineSearch, AiOutlineBell, AiOutlineUser } from 'react-icons/ai'
 import { useEffect, useState } from 'react'
-import { useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { logout } from '@/slices/User'
+import { clearCart } from '@/slices/CartUser'
 export default function Header() {
-    const data = useAppSelector((state:any)=>state.user)
-    console.log(data.isLogin);
-    
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+    const data = useAppSelector((state:any)=>state.user)    
     const [page, setPage] = useState("/")
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
     const location = useLocation()
+
+    const handleLogout = ()=>{
+        dispatch(logout())
+        dispatch(clearCart())      
+        setTimeout(() => {
+            navigate("/auth")
+        }, 2000);  
+    }
+
     useEffect(() => {
         const get = `${location.pathname.split("/").pop()}`
         setPage(get || '/');
@@ -113,7 +124,7 @@ export default function Header() {
                                                     </li>
                                                 </ul>
                                                 <div className="py-2">
-                                                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">Sign out</a>
+                                                    <a href="#" onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">Sign out</a>
                                                 </div>
                                             </div>
                                         )}

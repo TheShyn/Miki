@@ -8,10 +8,11 @@ import { getCartUser } from '@/slices/CartUser';
 import { getUser } from '@/slices/User';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 export default function FormLoginSection() {
+    const navigate = useNavigate()
     const [Login] = useLoginMutation()
     const dispatch = useAppDispatch()
     const schema = yup.object().shape({
@@ -37,7 +38,7 @@ export default function FormLoginSection() {
                     ...data.user
                 }
                 console.log('loginSuccess');
-                
+                navigate('/')
                 dispatch(getUser(dataUser))
                 dispatch(getCartUser(data?.user?.cart))
             }).catch((error:any) => {

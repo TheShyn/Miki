@@ -6,10 +6,12 @@ import { IProducts } from '@/interface/IProducts'
 import { addCartUser } from '@/slices/CartUser'
 import FormatPrice from '@/utils/FormatPrice'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 type Props = {
     product: IProducts
 }
 export default function ProductDetail({ product }: any) {
+    const navigate = useNavigate()
     const user = useAppSelector((state:any)=> state.user)
     const dispatch = useAppDispatch()
     const [addToCart] = useAddToCartMutation()
@@ -35,6 +37,9 @@ export default function ProductDetail({ product }: any) {
             return setErrorQuantity('Vui lòng nhập số lượng')
         }
         setErrorQuantity('')
+        if(!user.isLogin){
+            return navigate("/auth")
+        }
         const dataUp:any = {
             name: product.name,
             price: product.storage[size - 1].price,

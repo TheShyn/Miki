@@ -4,11 +4,13 @@ import ImgLogin from '@/assets/static/Login/Login.jpg'
 import BackGround from '@/assets/static/Login/bg.avif'
 import { Link } from 'react-router-dom'
 import FormRegisterSection from '@/sections/Auth/FormRegisterSection'
+import IsLogin from '@/components/IsLogin'
 
 export default function Register() {
   return (
-    <Page title="Login">
-        <div className="app py-[50px] bg-bgr" style={{background: `url("${BackGround}") top center `}}>
+    <IsLogin>
+      <Page title="Login">
+        <div className="app py-[50px] bg-bgr" style={{ background: `url("${BackGround}") top center ` }}>
           <div className="flex justify-center">
             <div className="flex">
               {/* Image */}
@@ -34,5 +36,6 @@ export default function Register() {
           {/* Decoration background */}
         </div>
       </Page>
+    </IsLogin>
   )
 }

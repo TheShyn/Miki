@@ -15,5 +15,6 @@ router.patch('/:id',updateUser)
 
 router.post('/cart/:id',cartHandle)
 router.patch('/cart/:id',cartHandle)
+router.delete('/cart/:id',cartHandle)
 // router.post('/cart',cartHandle)
 export default router

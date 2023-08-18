@@ -8,13 +8,15 @@ type Props = {
 
 export default function IsLogin({children }: Props) {
     const navigate = useNavigate()
-    const user = useAppSelector((state:any)=> state.auth)
-
+    const user = useAppSelector((state:any)=> state.user)
+    
     useEffect(()=>{
         // console.log(user)
-        // if(user.isLogin){
-        //     navigate("/")
-        // }
+        if(user.isLogin){
+            navigate("/")
+        }else{
+            navigate("/auth")
+        }
     },[user.isLogin])
     return (
         <div>

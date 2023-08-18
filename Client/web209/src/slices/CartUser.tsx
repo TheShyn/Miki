@@ -37,8 +37,11 @@ const cartUserSlice = createSlice({
                 if (confirm) state.carts = state.carts.filter((item: any) => item.product !== action.payload);
                 productFound.quantity = 1
             }
+        },
+        clearCart: (state:any) => {
+            state.carts = []
         }
     }
 })
-export const {getCartUser,addCartUser, removeCart,increase, decrease} = cartUserSlice.actions
+export const {getCartUser,addCartUser, removeCart,increase, decrease,clearCart} = cartUserSlice.actions
 export default cartUserSlice.reducer
