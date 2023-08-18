@@ -1,26 +1,30 @@
+import { useGetCategoriesQuery } from "@/api/categories";
+import { useAddProductMutation } from "@/api/products";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Button from "@/components/Button";
 import FormProviderBox from "@/components/hook-form/FormProviderBox";
 import InputField from "@/components/hook-form/InputField";
 import { SelectOption } from "@/components/hook-form/SelectOption";
 import { TextArea } from "@/components/hook-form/TextArea";
-import { getAllCategories } from "@/instance/Categories";
 import cloudinaryUpload from "@/instance/FileUpload";
-import { addProduct } from "@/instance/Products";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { AiOutlineSearch, AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineCloudUpload, AiOutlineLoading3Quarters, AiOutlineSearch } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import * as yup from 'yup';
 type Props = {}
 
 export default function AddProduct({ }: Props) {
     const [errAdd, setErrAdd] = useState('');
     const [categories, setCategories] = useState([])
-    const [imgs, setImgs] = useState([])
-    const dispatch = useAppDispatch()
-    const data = useAppSelector((state: any) => state.products)
-    const cate = useAppSelector((state: any) => state.categories)
+    const [previewImages, setPreviewImages] = useState<any>([]);
+    const navigate = useNavigate()
+    const { data: datCate, isLoading: loadingCate } = useGetCategoriesQuery({})
+    const [uploadFiles, setUploadFiles] = useState(new FormData())
+    const [addProduct, {isLoading:loadingAdd}] = useAddProductMutation()
+    
+
     const schema = yup.object().shape({
         nameProduct: yup.string().required('Nhập tên sản phẩm'),
         // img: yup
@@ -42,7 +46,13 @@ export default function AddProduct({ }: Props) {
         resolver: yupResolver(schema),
         reValidateMode: 'onBlur',
         defaultValues: {
-            dynamicForm: [],
+            dynamicForm: [
+                {
+                    quantity: "",
+                    size: "",
+                    price: "",
+                }
+            ],
         },
     });
     const { handleSubmit, reset, control } = methods;
@@ -59,41 +69,49 @@ export default function AddProduct({ }: Props) {
         for (let i = 0; i < files.length; i++) {
             uploadData.append('files', files[i], "files");
         }
-        cloudinaryUpload(uploadData)
-        .then((data:any)=>{
-            setImgs(data.data.secure_urls);
-            console.log(data);
-            
-        })
+        if (files && files.length > 0) {
+            const imageUrls = Array.from(files).map((file: any) => URL.createObjectURL(file));
+            setPreviewImages(imageUrls);
+        }
+        setUploadFiles(uploadData)
     }
     //submit
-    const onSubmit = (data: any) => {
+    const onSubmit = async (data: any) => {
         if (data.dynamicForm.length == 0) {
             return setErrAdd('Vui lòng thêm size');
         } else {
             setErrAdd('');
         }
 
-        console.log(data);
-        
+
         if (data) {
+            const imgs = await cloudinaryUpload(uploadFiles)
+            console.log(imgs);
+            
             const dataUp = {
                 name: data.nameProduct,
                 description: data.desc,
                 categoryId: "64822a45fe4657527476ecd9",
-                images: imgs,
+                images: imgs?.data?.secure_urls,
                 storage: data.dynamicForm
             }
             console.log(dataUp);
-            
 
-            dispatch(addProduct(dataUp))
+                await addProduct(dataUp).unwrap().then(()=>{
+                    reset()
+                    navigate("/admin/products")
+
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    
+                })
 
         }
     }
     useEffect(() => {
-        dispatch(getAllCategories())
-        setCategories(cate?.categories.map((item: any) => {
+        // dispatch(getAllCategories())
+        setCategories(datCate?.data?.map((item: any) => {
             return {
                 value: item._id,
                 name: item.name
@@ -102,7 +120,7 @@ export default function AddProduct({ }: Props) {
     }, [])
     return (
         <div className='mt-[50px]'>
-           
+
             <div className='flex justify-between items-center flex-wrap'>
                 <h1 className='mb-5 text-2xl'>Thêm sản phẩm</h1>
                 <div className='bg-white flex items-center px-2 rounded-8 py-1 border border-1 boder-#ccc'>
@@ -110,11 +128,7 @@ export default function AddProduct({ }: Props) {
                     <AiOutlineSearch className='text-black' />
                 </div>
             </div>
-            {data.error ?
-                <span className='my-3 align-middle flex justify-center bg-red-200  py-2 text-red-600'>{data.error}</span>
-                :
-                undefined
-            }
+
             <FormProviderBox className="" methods={methods} onSubmit={handleSubmit(onSubmit)}>
 
                 <InputField
@@ -186,7 +200,7 @@ export default function AddProduct({ }: Props) {
                     label="Category"
                     styleLabel='text-[14px] italic'
                 />
-                <div className="flex flex-wrap">
+                <div className="flex flex-col mb-5">
 
                     <InputField
                         name="images"
@@ -199,17 +213,21 @@ export default function AddProduct({ }: Props) {
                         onChange={(e: any) => { handleChange(e) }}
                         mutiple
                     />
-                    {/* <InputField
-                        name="imgSub"
-                        // styleMessage="text-msgEr text-sm"
-                        styleInput="hidden"
-                        placeholder="Thông tin sản phẩm"
-                        type='file'
-                        label={<div className="flex justify-center  flex-col items-center text-2xl"><AiOutlineCloudUpload /> <div className="text-[14px]">Ảnh phụ</div></div>}
-                        styleLabel="border min-w-[150px] border-dashed max-w-[150px] border-2 text-center py-[40px]"
-                    /> */}
+
+                    <div className="flex flex-wrap gap-4">
+                        {previewImages.map((imageUrl:any, index:any) => (
+                            <img
+                                key={index}
+                                src={imageUrl}
+                                alt={`Preview ${index}`}
+                                style={{ maxWidth: '150px', maxHeight: '150px', margin: '5px' }}
+                                className="object-cover"
+                            />
+                        ))}
+
+                    </div>
                 </div>
-                <Button primary type='submit' content="Thêm sản phẩm" />
+                <Button primary type='submit' content={loadingAdd ? <AiOutlineLoading3Quarters className='animate-spin' />: "Thêm sản phẩm"} />
             </FormProviderBox>
         </div>
 

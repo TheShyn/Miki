@@ -5,7 +5,8 @@ import Banner from "@/sections/Home/Banner";
 import BestSeller from "@/sections/Home/BestSeller";
 import CateSection from "@/sections/Home/CategorieSection";
 export default function Home() {
-
+ 
+  
   return (
     <Page title="Trang chủ">
       <Banner/>

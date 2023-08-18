@@ -1,3 +1,4 @@
+import { useGetCategoryByIdQuery, useUpdateCategoryMutation } from "@/api/categories";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Button from "@/components/Button";
 import FormProviderBox from "@/components/hook-form/FormProviderBox";
@@ -7,15 +8,16 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as yup from 'yup';
 type Props = {}
 
 export default function UpdateCate({ }: Props) {
-    const dispatch = useAppDispatch()
     const {id} = useParams()
-    const cate = useAppSelector((state: any) => state.categories)   
-    console.log(cate);
+    const {data, isLoading,refetch} = useGetCategoryByIdQuery(id)
+    const navigate = useNavigate()
+    
+    const [updateCate, {isLoading:loadingUpdate}] = useUpdateCategoryMutation()
     const schema = yup.object().shape({
         name: yup.string().required('Nhập tên loại sản phẩm'),
  
@@ -24,23 +26,32 @@ export default function UpdateCate({ }: Props) {
         resolver: yupResolver(schema),
         reValidateMode: 'onBlur',
         defaultValues: {
-            name: cate.category.name
+            name: data?.data?.name
         },
     });
     const { handleSubmit, reset, control  } = methods;
     //
     //submit
     const onSubmit = async (data: any) => {
-        console.log(data);
+        const dataUp = {
+            id: id,
+            data
+        }
         if(data){
-            dispatch(updateCate({id, data}))
+            updateCate(dataUp).unwrap().then(()=>{
+                refetch()
+               navigate('/admin/categories')
+                
+            }).catch((error)=>{
+                console.log(error);
+                
+            })
         }
        
     }
     useEffect(() => {
-        dispatch(getOneCate(`${id}`))
-        reset({ name: cate.category.name });    
-    }, [cate.category.name])
+        reset({ name: data?.data?.name }); 
+    }, [isLoading])
     return (
         <div className='mt-[50px]'>
            
@@ -51,16 +62,7 @@ export default function UpdateCate({ }: Props) {
                     <AiOutlineSearch className='text-black' />
                 </div>
             </div>
-            {cate.error ?
-                <span className='my-3 align-middle flex justify-center bg-red-200  py-2 text-red-600'>{cate.error}</span>
-                :
-                undefined
-            }
-             {cate.success ?
-                <span className='my-3 align-middle flex justify-center bg-green-200  py-2 text-green-600'>Thêm thành công</span>
-                :
-                undefined
-            }
+
             <FormProviderBox className="" methods={methods} onSubmit={handleSubmit(onSubmit)}>
 
                 <InputField

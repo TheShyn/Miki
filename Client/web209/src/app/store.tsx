@@ -1,35 +1,58 @@
-import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
-import productsReducer from "@/slices/Products"
-import categoriesReducer from "@/slices/Categories"
-import authReducer from "@/slices/Auth"
-import userReducer from "@/slices/Users"
-import cartReducer from "@/slices/Carts"
-import cartUserReducer from "@/slices/CartUser"
-import { persistReducer, persistStore } from 'redux-persist'
+import authApi, {authReducer} from '@/api/auth';
+import categoryApi, { categoryReducer } from '@/api/categories';
+import ordersApi, { orderReducer } from '@/api/orders';
+import productApi, { productReducer } from '@/api/products';
+import usersApi, { usersReducer } from '@/api/users';
+import { Action, ThunkAction, combineReducers, configureStore } from '@reduxjs/toolkit';
+import cartReducer from '@/slices/CartUser'
+import userReducer from '@/slices/User'
+import {
+    FLUSH,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+    REHYDRATE,
+    persistReducer,
+    persistStore,
+} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import cartApi, { cartReducerApi } from '@/api/cartUser';
 const persistConfig = {
     key: 'root',
     storage,
-    whileList: ['auth']
-  }
+    whileList: ['auth','cartUser'], // luu strorage 
+    backlist: ['products'] // k luu vaoo storage
+}
 
 
-  const rootReducer = combineReducers({
-    products: productsReducer,
-    categories: categoriesReducer,
-    auth: authReducer,
-    user: userReducer,
-    cart: cartReducer,
-    cartUser: cartUserReducer,
+const rootReducer = combineReducers({
+    [productApi.reducerPath]: productReducer,
+    [categoryApi.reducerPath]: categoryReducer,
+    [authApi.reducerPath]: authReducer,
+    [usersApi.reducerPath]: usersReducer,
+    [ordersApi.reducerPath]: orderReducer,
+    userCart: cartReducer,
+    [cartApi.reducerPath]: cartReducerApi,
+    user: userReducer
 })
+   
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
+const middlewares = [productApi.middleware,cartApi.middleware,ordersApi.middleware, categoryApi.middleware, authApi.middleware, usersApi.middleware]
 const store = configureStore({
-    reducer:persistedReducer
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware:any)=>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
+        }).concat(...middlewares)
+
 })
 
- 
+
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>
 export type AppThunk<ReturnType = void> = ThunkAction<

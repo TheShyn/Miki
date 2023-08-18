@@ -22,7 +22,7 @@ export default function ItemProduct({ discount = 0, name, price, img, slug }: IP
                     
                     '>
                 <Link to={`/products/${slug}`}>
-                    <img src={"https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75"} alt="" className='rounded-[5px] max-h-[325px] hover:scale-[1.2] duration-1000' />
+                    <img src={img} alt="" className='rounded-[5px] max-h-[325px] hover:scale-[1.2] duration-1000' />
                 </Link>
             </div>
             <Link to={`/products/${slug}`}>

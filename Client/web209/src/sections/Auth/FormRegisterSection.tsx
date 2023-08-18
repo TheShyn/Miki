@@ -1,7 +1,7 @@
+import { useRegisterMutation } from '@/api/auth';
 import Button from '@/components/Button'
 import FormProviderBox from '@/components/hook-form/FormProviderBox'
 import InputField from '@/components/hook-form/InputField'
-import { register } from '@/instance/Auth';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
 export default function FormRegisterSection() {
-    const [err, setErr] = useState('')
+    const [register] = useRegisterMutation()
     const schema = yup.object().shape({
         firstName: yup.string().required('Vui lòng nhập họ'),
         lastName: yup.string().required('Vui lòng nhập tên'),
@@ -43,20 +43,14 @@ export default function FormRegisterSection() {
 
                 })
                 .catch((error) => {
-                    const { message } = error?.response?.data
-                    setErr(message);
-
+                    console.log(error);
+                    
                 })
         }
     }
     return (
         <div>
             {/* Form */}
-            {err ?
-                <span className='mt-3 align-middle flex justify-center bg-red-200 mx-[30px] py-2 text-red-600'>{err}</span>
-                :
-                undefined
-            }
             <FormProviderBox className={'px-10 mt-6 '} methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex mt-[32px] justify-between">
                     {/* FirstName */}

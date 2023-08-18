@@ -1,30 +1,39 @@
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useGetProductsQuery } from '@/api/products'
 import BannerProducts from '@/assets/static/BannerProducts/banner.jpg'
 import Breadcum from '@/components/Breadcum'
 import Page from '@/components/Page'
 import Pagination from '@/components/Panigation'
 import ProductItems from '@/components/ProductItems'
-import { getAllProducts } from '@/instance/Products'
 import SortProduct from '@/sections/Products/Sort'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 type Props = {}
 export default function Products({ }: Props) {
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(1)
+  const [category, setCategory] = useState("")
+  const { data, isLoading, isError, error } = useGetProductsQuery({
+      page: page,
+      limit:  2
+    }
+  );
+  console.log(error);  
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const products = useAppSelector(state => state.products)
-  console.log(products);
-  
-  const dispatch = useAppDispatch()
   useEffect(() => {
-    searchParams.set('page', String(null));
     let tempPage:any
     let category: string | undefined;
     if (searchParams.has('page')) tempPage = searchParams.get('page');
-    if (searchParams.has('category')) category = searchParams.get('category') || "";
-    dispatch(getAllProducts({page:tempPage || null, limit:1, category})) 
-  }, [location]);
+    if (searchParams.has('category')){ 
+      category = searchParams.get('category') || ""
+      setLimit(0)
+    };
+    // setCategory(`${category}`)
+    setCategory(`${category}`)
+    setPage(tempPage)
+    
+  }, [location.search]);
   return (
     <Page title='Tất cả sản phẩm'>
       <div className="app">
@@ -42,8 +51,8 @@ export default function Products({ }: Props) {
           ]}
           />
           <SortProduct />
-          <ProductItems data={products.products} />
-          <Pagination pageCount={products.totalPages || 0} scroll={600}/>
+          <ProductItems data={data?.data} />
+          <Pagination pageCount={data?.totalPages || 0} scroll={600}/>
         </div>
       </div>
     </Page>

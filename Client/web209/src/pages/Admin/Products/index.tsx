@@ -1,26 +1,30 @@
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { deleteProduct, getAllProducts } from '@/instance/Products'
-import React, { useEffect } from 'react'
-import { AiOutlineSearch, AiOutlinePlus } from "react-icons/ai"
-import { Link } from 'react-router-dom'
+import { useGetProductsQuery, useRemoveProductMutation } from '@/api/products'
+import Pagination from '@/components/Panigation'
+import { useEffect, useState } from 'react'
+import { AiOutlineLoading3Quarters, AiOutlinePlus, AiOutlineSearch } from "react-icons/ai"
+import { Link, useLocation } from 'react-router-dom'
 type Props = {}
 
 export default function ProductsMana({ }: Props) {
-    const data = useAppSelector((state: any) => state.products)
-    console.log(data);
-    
-    const dipatch = useAppDispatch()
-    const handleDelete = (id:string)=>{
+    const [page, setPage] = useState<any>(1)
+    const { data, isLoading } = useGetProductsQuery({ limit: 1, page: page }) 
+    const [removeProduct, { isLoading: loadingDelete }] = useRemoveProductMutation()
+    const [indexDelete, setIndexDelete] = useState<any>()
+    const handleDelete = (id: string) => {
+        setIndexDelete(id)
         const a = confirm("Bạn có muốn xóa sản phẩm này không ? ")
-        if(a){
-            dipatch(deleteProduct(id))
-            
+        if (a) {
+            // dipatch(deleteProduct(id))
+            removeProduct(id)
         }
     }
+    const location = useLocation()
+    const searchParams = new URLSearchParams(location.search);
     useEffect(() => {
-        
-        dipatch(getAllProducts({}))
-    }, [])
+        let tempPage
+        if (searchParams.has('page')) tempPage = searchParams.get('page');
+        setPage(tempPage)
+    }, [location.search])
     return (
         <div className='mt-[50px]'>
             <div className='flex justify-between items-center flex-wrap'>
@@ -61,7 +65,7 @@ export default function ProductsMana({ }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.products.map((item: any, index: string) => {
+                        {data?.data?.map((item: any, index: string) => {
                             return (
 
                                 <tr key={index} className="bg-white border-b ">
@@ -69,7 +73,7 @@ export default function ProductsMana({ }: Props) {
                                         {item.name}
                                     </th>
                                     <td className="px-6 py-4">
-                                        <img className='max-w-[80px]' src={item?.images[0]} alt="" />
+                                        <img className='max-w-[80px]' src={item?.images?.[0]} alt="" />
                                     </td>
                                     <td className="px-6 py-4">
                                         {item.categoryId.name}
@@ -89,10 +93,12 @@ export default function ProductsMana({ }: Props) {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className='flex flex-wrap gap-3'>
-                                            <button onClick = {()=>handleDelete(item._id)}>Delete</button>
-                                            <button>
+                                            <button className='text-red-400' onClick={() => handleDelete(item._id)}>
+                                                {loadingDelete && indexDelete == item._id ? <AiOutlineLoading3Quarters className='animate-spin' /> : "Xóa"}
+                                            </button>
+                                            <button className='text-blue-400'>
                                                 <Link to={`/admin/products/edit/${item.slug}`}>
-                                                    Edit
+                                                    Sửa
                                                 </Link>
                                             </button>
                                         </div>
@@ -105,6 +111,7 @@ export default function ProductsMana({ }: Props) {
                     </tbody>
                 </table>
             </div>
+            <Pagination pageCount={data?.totalPages} scroll={600} />
         </div>
 
 

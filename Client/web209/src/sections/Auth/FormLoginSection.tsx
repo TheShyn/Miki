@@ -1,17 +1,19 @@
+import { useLoginMutation } from '@/api/auth';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import Button from '@/components/Button'
 import FormProviderBox from '@/components/hook-form/FormProviderBox'
 import InputField from '@/components/hook-form/InputField'
 import { authLogin, login } from '@/instance/Auth';
+import { getCartUser } from '@/slices/CartUser';
+import { getUser } from '@/slices/User';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
 export default function FormLoginSection() {
-    const data = useAppSelector((state:any)=>state.auth)
+    const [Login] = useLoginMutation()
     const dispatch = useAppDispatch()
-    console.log(data);    
     const schema = yup.object().shape({
         email: yup
             .string()
@@ -28,25 +30,26 @@ export default function FormLoginSection() {
     });
     const { handleSubmit, reset } = methods;
     const onSubmit = (data: any) => {
-        if(data){
-            dispatch(authLogin(data))
+        if (data) {
+            Login(data).unwrap().then((data:any)=>{
+                const dataUser = {
+                    accessToken: data.accessToken,
+                    ...data.user
+                }
+                console.log('loginSuccess');
+                
+                dispatch(getUser(dataUser))
+                dispatch(getCartUser(data?.user?.cart))
+            }).catch((error:any) => {
+                console.log(error);
+                console.log(error.data.message)
+            })
 
         }
     }
-    
+
     return (
         <div>
-            {/* Form */}
-            {data.error ?
-                <span className='mt-3 align-middle flex justify-center bg-red-200 mx-[30px] py-2 text-red-600'>{data.error}</span>
-                :
-                undefined
-            }
-            {data.isLogin ?
-                <span className='mt-3 align-middle flex justify-center bg-green-200 mx-[30px] py-2 text-green-600'>Đăng nhập thành công</span>
-                :
-                undefined
-            }
             <FormProviderBox className={'px-10 mt-6 '} methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 {/* Email */}
                 <InputField

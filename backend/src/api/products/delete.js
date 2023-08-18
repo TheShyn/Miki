@@ -8,7 +8,8 @@ const DeleteProduct = async (req, res) => {
     const { ObjectId } = mongoose.Types;
     const method = req.method
     const { id } = req.params
-    //check id valid
+    console.log(id);
+    
     await connect()
     switch (method) {
         case 'DELETE':
@@ -17,18 +18,18 @@ const DeleteProduct = async (req, res) => {
                 if (!product) {
                     return res.status(404).send({ success:false,message: "Product not found" })
                 }
-                // const arrayImg = product.imgs.map(item => {
-                //     const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
-                //     return "products/" + fileName
-                // })
+                const arrayImg = product?.images?.map(item => {
+                    const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
+                    return "products/" + fileName
+                })
                 await Categories.findOneAndUpdate(
                     { _id: product.categoryId },
                     { $pull: { products: product._id } },
                     { new: true },
                   );
 
-                const deleteProdcut = await Product.deleteOne({_id:id})
-                // cloudinary.api.delete_resources(arrayImg)
+                await Product.deleteOne({_id:id})
+                cloudinary.api.delete_resources(arrayImg)
                 return res.status(200).send({success:true,message: "Delete product successfully"})
             } catch (error) {
                 return res.status(500).send({ message: error })

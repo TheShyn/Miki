@@ -1,15 +1,12 @@
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { getAllUsers } from '@/instance/User'
+import { useGetAllUsersQuery } from '@/api/users'
 import { useEffect } from 'react'
-import { AiOutlinePlus, AiOutlineSearch } from "react-icons/ai"
+import { AiOutlineSearch } from "react-icons/ai"
 import { Link } from 'react-router-dom'
 type Props = {}
 
 export default function UserMana({ }: Props) {
-    const data = useAppSelector((state: any) => state.user)
-    console.log(data);
-
-    const dipatch = useAppDispatch()
+    const {data, isLoading} = useGetAllUsersQuery()
+    if(isLoading) return <div>Loading....</div>
     const handleDelete = (id: string) => {
 
         const a = confirm("Bạn có muốn loại sản phẩm này không ? ")
@@ -18,9 +15,6 @@ export default function UserMana({ }: Props) {
 
         }
     }
-    useEffect(() => {
-        dipatch(getAllUsers())
-    }, [])
     return (
         <div className='mt-[50px]'>
             <div className='flex justify-between items-center flex-wrap'>
@@ -47,12 +41,15 @@ export default function UserMana({ }: Props) {
                                 Status
                             </th>
                             <th scope="col" className="px-6 py-3">
+                                Role
+                            </th>
+                            <th scope="col" className="px-6 py-3">
                                 Action
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {data.users.map((item: any, index: string) => {
+                        {data.data.map((item: any, index: string) => {
                             return (
 
                                 <tr key={index} className="bg-white border-b ">
@@ -68,9 +65,12 @@ export default function UserMana({ }: Props) {
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
                                         {item.status}
                                     </th>
+                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                                        {item.role}
+                                    </th>
 
                                     <td className="px-6 py-4">
-                                        <div className='flex flex-wrap gap-3'>
+                                        <div className={`flex flex-wrap gap-3 `}>
                                             <button className={`${item._id === '64822a45fe4657527476ecd9' ? 'hidden' : ''}`} onClick={() => handleDelete(item._id)}>Delete</button>
                                             <button >
                                                 <Link to={`/admin/users/edit/${item?._id}`}>
@@ -82,7 +82,7 @@ export default function UserMana({ }: Props) {
                                 </tr>
                             )
                         })}
-
+{/* ${item.role ==='admin' ? 'hidden' : ""} */}
 
                     </tbody>
                 </table>

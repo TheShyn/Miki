@@ -1,3 +1,4 @@
+import { useAddCategoryMutation } from "@/api/categories";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Button from "@/components/Button";
 import FormProviderBox from "@/components/hook-form/FormProviderBox";
@@ -6,15 +7,14 @@ import { addCate } from "@/instance/Categories";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineLoading3Quarters, AiOutlineSearch } from "react-icons/ai";
+import { Navigate, useNavigate } from "react-router-dom";
 import * as yup from 'yup';
 type Props = {}
 
 export default function AddCate({ }: Props) {
-    const dispatch = useAppDispatch()
-    const cate = useAppSelector((state: any) => state.categories)
-    console.log(cate);
-    
+    const [addCate, {isLoading}] = useAddCategoryMutation()
+    const navigate = useNavigate()
     const schema = yup.object().shape({
         name: yup.string().required('Nhập tên loại sản phẩm'),
  
@@ -32,7 +32,9 @@ export default function AddCate({ }: Props) {
     const onSubmit = (data: any) => {
         console.log(data);
         if(data){
-            dispatch(addCate(data))
+            addCate(data).unwrap().then(()=>{
+                navigate("/admin/categories")
+            })
         }
        
     }
@@ -46,16 +48,6 @@ export default function AddCate({ }: Props) {
                     <AiOutlineSearch className='text-black' />
                 </div>
             </div>
-            {cate.error ?
-                <span className='my-3 align-middle flex justify-center bg-red-200  py-2 text-red-600'>{cate.error}</span>
-                :
-                undefined
-            }
-             {cate.success ?
-                <span className='my-3 align-middle flex justify-center bg-green-200  py-2 text-green-600'>Thêm thành công</span>
-                :
-                undefined
-            }
             <FormProviderBox className="" methods={methods} onSubmit={handleSubmit(onSubmit)}>
 
                 <InputField
@@ -65,7 +57,7 @@ export default function AddCate({ }: Props) {
                     placeholder="Nhập tên sản phẩm"
                 />
 
-                <Button primary type='submit' content="Thêm sản phẩm" />
+                <Button primary type='submit' content={isLoading ? <AiOutlineLoading3Quarters className='animate-spin' /> : "Thêm sản phẩm"} />
             </FormProviderBox>
         </div>
 

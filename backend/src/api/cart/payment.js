@@ -36,8 +36,13 @@ const paymentHandler = async (req, res) => {
 
                 for (const cartItem of cart) {
                     const product = await Product.findById(cartItem.product);
+                    if(!product){
+                        return res.status(404).json({
+                            success: false,
+                            message: "Product not found"
+                        })
+                    }
                     const storage = product.storage.find(item => item.size == cartItem.size)
-
                     if (cartItem.quantity > storage.quantity) {
                         return res.status(400).json({
                             success: false,

@@ -7,7 +7,7 @@ import { cartsSchema } from "../../validate/SchemaCart";
 const editCart = async (req,res) =>{ 
     const method = req.method
     const { id } = req.params
-    const {status} = req.body
+    const {status} = req.body    
     await connect()
     switch (method) {
         case "PATCH":

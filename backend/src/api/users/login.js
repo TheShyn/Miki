@@ -23,10 +23,8 @@ const Login = async (req, res) => {
                 }
                 const user = await Users.findOne({ email: data.email }).populate("cart");
                 if (!user) {
-                    console.log('dasdasdasd');
                     return res.status(400).send({ message: "user not found" });
                 }
-                console.log('dasdasdasd');
                 if(user.status === 'disabled'){
                     return res.status(400).send({ message: "your account got ban" });
 

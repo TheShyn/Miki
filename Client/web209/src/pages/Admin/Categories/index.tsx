@@ -1,28 +1,38 @@
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { deleteCate, getAllCategories } from '@/instance/Categories'
-import { deleteProduct, getAllProducts } from '@/instance/Products'
-import React, { useEffect } from 'react'
-import { AiOutlineSearch, AiOutlinePlus } from "react-icons/ai"
-import { Link } from 'react-router-dom'
+import { useGetCategoriesQuery, useRemoveCateMutation } from '@/api/categories'
+import Pagination from '@/components/Panigation'
+import { useEffect, useState } from 'react'
+import { AiOutlineLoading3Quarters, AiOutlinePlus, AiOutlineSearch } from "react-icons/ai"
+import { Link, useLocation } from 'react-router-dom'
 type Props = {}
 
 export default function CategoriesMana({ }: Props) {
-    const data = useAppSelector((state: any) => state.categories)
-    
-    const dipatch = useAppDispatch()
-    const handleDelete = (id:string)=>{
+
+    const [page, setPage] = useState<any>(1)
+    // const data = useAppSelector((state: any) => state.categories)
+    const { data, isLoading } = useGetCategoriesQuery({ limit: 2, page: page })
+    const [deleteCate, { isLoading: loadingDelete }] = useRemoveCateMutation()
+    const location = useLocation()
+    const [indexDelete, setIndexDelete] = useState<any>()
+    const searchParams = new URLSearchParams(location.search);
+
+    const handleDelete = async (id: string) => {
         console.log(id);
-        
+        setIndexDelete(id)
         const a = confirm("Bạn có muốn loại sản phẩm này không ? ")
-        if(a){
-            dipatch(deleteCate(id))
-            
+        if (a) {
+            // dipatch(deleteCate(id))
+            await deleteCate(id).unwrap().then((data)=>{
+                console.log(data);
+                
+            })
         }
     }
+
     useEffect(() => {
-        dipatch(getAllCategories())
-        // dipatch(deleteCate())
-    }, [])
+        let tempPage
+        if (searchParams.has('page')) tempPage = searchParams.get('page');
+        setPage(tempPage)
+    }, [location.search])
     return (
         <div className='mt-[50px]'>
             <div className='flex justify-between items-center flex-wrap'>
@@ -51,7 +61,7 @@ export default function CategoriesMana({ }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.categories.map((item: any, index: string) => {
+                        {data?.data?.map((item: any, index: string) => {
                             return (
 
                                 <tr key={index} className="bg-white border-b ">
@@ -61,8 +71,11 @@ export default function CategoriesMana({ }: Props) {
 
                                     <td className="px-6 py-4">
                                         <div className='flex flex-wrap gap-3'>
-                                            <button className={`${item._id === '64822a45fe4657527476ecd9' ?'hidden' : ''}`} onClick = {()=>handleDelete(item._id)}>Delete</button>
-                                            <button >
+                                            <button className={`text-red-400 ${item._id === '64822a45fe4657527476ecd9' ? 'hidden' : ''}`} onClick={() => handleDelete(item._id)}>
+                                                {loadingDelete && indexDelete == item._id ? <AiOutlineLoading3Quarters className='animate-spin' /> : "Xóa"}
+
+                                            </button>
+                                            <button className='text-blue-400'>
                                                 <Link to={`/admin/categories/edit/${item?._id}`}>
                                                     Edit
                                                 </Link>
@@ -77,6 +90,7 @@ export default function CategoriesMana({ }: Props) {
                     </tbody>
                 </table>
             </div>
+            <Pagination pageCount={data?.totalPages || 0} scroll={600} />
         </div>
 
 

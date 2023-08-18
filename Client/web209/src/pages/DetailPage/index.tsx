@@ -1,3 +1,4 @@
+import { useGetProductBySlugQuery, useGetProductsQuery } from '@/api/products'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import Breadcum from '@/components/Breadcum'
 import Page from '@/components/Page'
@@ -10,30 +11,23 @@ import { useLocation, useParams } from 'react-router-dom'
 
 export default function DetailPage() {
   const { id } = useParams();
-  const data = useAppSelector((state:any) => state.products)
-  const dispatch = useAppDispatch()  
-  // const [product, setProduct] = useState({})
+  const { data, isLoading } = useGetProductBySlugQuery(id)
+
+  const { data: dataProduct, isLoading: loadingProduct } = useGetProductsQuery({});
+
   const [relateProducts, setRelateProducts] = useState([])
   const location = useLocation()
   const { pathname } = location;
 
-
-  useEffect(()=>{
+  useEffect(() => {
     window.scrollTo({ top: 0 });
-    dispatch(getProduct1(`${id}`))
-    const data = getProduct(id)
-    data.then((res)=>{
-      const relateProduct = getProducts()
-      relateProduct.then((data)=>{
-        const relate= data.data.data
-        setRelateProducts(relate.filter((item:any)=>item.slug !== id));
-      })
-    })
+    // const relateProduct = getProducts()
+    setRelateProducts(dataProduct?.data.filter((item: any) => item?.slug !== id && item?.category === data?.data?.categoryId));
 
-    
 
-    
-  },[pathname])
+
+
+  }, [pathname])
   return (
     <Page title='Tên sản phẩm' >
 
@@ -49,8 +43,8 @@ export default function DetailPage() {
               label: 'Tất cả sản phẩm '
             }
           ]} />
-          <ProductDetail product={data.product} />
-          <MoreDetail id={data.product._id}/>
+          <ProductDetail product={data?.data} />
+          <MoreDetail id={data?.data._id} />
           {/* <MoreDetail product={product} feedbacks={feedbacks} /> */}
           <div className=" text-[30px] text-2nd-text font-bold  mt-[60px]">
             Có thể bạn cũng thích

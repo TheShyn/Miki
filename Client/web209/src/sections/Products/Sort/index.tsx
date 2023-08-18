@@ -1,16 +1,16 @@
+import { useGetCategoriesQuery } from "@/api/categories";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { getAllCategories } from "@/instance/Categories";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function SortProduct() {
+    const {data, isLoading} = useGetCategoriesQuery({})
     const [selectCate, setSelectCate] = useState<number|null>(null)
     const location = useLocation();
     const { pathname } = location;
     const navigate = useNavigate()
     const searchParams = new URLSearchParams(location.search);
-    const {categories} = useAppSelector((state:any)=> state.categories)
-    const dipatch = useAppDispatch()
 
     const handlePageClick = (index:number,id:string) => {
         setSelectCate(index)
@@ -21,9 +21,6 @@ export default function SortProduct() {
         navigate(newUrl)
         // window.scrollTo({ top: 500, behavior: 'smooth' });
     }
-    useEffect(() => {
-        dipatch(getAllCategories())
-    }, [])
     return (
         <div className="">
             <h1 className="font-bold text-[23px] md:text-32 mb-[20px] leading-10">Danh mục sản phẩm</h1>
@@ -39,7 +36,7 @@ export default function SortProduct() {
 
                 <div>
                     <ul className="flex gap-5 cursor-pointer">
-                        {categories.map((item: any, index: any) => {
+                        {data && data?.data?.map((item: any, index: any) => {
                             return <li onClick={() => handlePageClick(index,item._id)} key={item._id} className={`text-[rgba(0,0,0,0.6)] duration-500 
                             hover:border-b-[1px] hover:text-[#000] hover:border-[#000 ${selectCate === index ? "text-[rgba(0,0,0,1)] border-b-[1px] border-[#000]" : ''}`}>{item.name}</li>
                         })}

@@ -7,10 +7,11 @@ import Product from "../../../models/Product";
 
 
 const cartHandle = async function (req, res) {
+    await connect()
     const method = req.method
     const { id } = req.params
     const data = req.body
-    await connect()
+    console.log(data)
     switch (method) {
         case 'POST':
             try {

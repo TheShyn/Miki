@@ -1,20 +1,21 @@
+import { useAddToCartMutation } from '@/api/cartUser'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import Button from '@/components/Button'
 import { addToCart } from '@/instance/CartUser'
 import { IProducts } from '@/interface/IProducts'
+import { addCartUser } from '@/slices/CartUser'
 import FormatPrice from '@/utils/FormatPrice'
 import { useEffect, useState } from 'react'
 type Props = {
     product: IProducts
 }
 export default function ProductDetail({ product }: any) {
+    const user = useAppSelector((state:any)=> state.user)
+    const dispatch = useAppDispatch()
+    const [addToCart] = useAddToCartMutation()
     const [size, setSize] = useState(1)
     const [amount, setAmount] = useState(0);
     const [errorQuantity, setErrorQuantity] = useState('');
-    const dispatch = useAppDispatch()
-
-    const user = useAppSelector((state: any) => state.auth)
-    const cartUser = useAppSelector((state: any) => state.cartUser)
     const handleSize = (index: number) => {
         setSize(index)
     }
@@ -31,10 +32,10 @@ export default function ProductDetail({ product }: any) {
 
     const handleAddCart = () => {
         if (amount <= 0) {
-            return setErrorQuantity('Vui lòng chọn size')
+            return setErrorQuantity('Vui lòng nhập số lượng')
         }
         setErrorQuantity('')
-        const data = {
+        const dataUp:any = {
             name: product.name,
             price: product.storage[size - 1].price,
             size: product.storage[size - 1].size,
@@ -44,8 +45,15 @@ export default function ProductDetail({ product }: any) {
             product: product._id
 
         }
-        dispatch(addToCart({id:user.data._id,data}))
-        console.log(data);
+        addToCart({id:user?.user?._id, data: dataUp }).unwrap().then((data)=>{
+            console.log(data);
+            dispatch(addCartUser(dataUp))
+        }).catch((error)=>{
+            console.log(error);
+            
+        })
+        // dispatch(addToCart({id:user.data._id,data}))
+        console.log(dataUp);
 
     }
     useEffect(() => {
@@ -58,31 +66,19 @@ export default function ProductDetail({ product }: any) {
                 <div className="container py-24 mx-auto">
                     <div className="lg:w-4/5 mx-auto flex flex-wrap">
                         <div className='w-full lg:w-1/2 flex flex-col items-center'  >
-                            <img alt="ecommerce" className="w-full object-cover object-center rounded-[10px] border border-gray-200" src="https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75" />
+                            <img alt="ecommerce" className="w-full object-cover object-center rounded-[10px] border border-gray-200" src={product?.images?.[0]} />
                             <div className="mt-3 overflow-x-scroll" >
                                 <ul className='flex gap-4'>
-                                    <li>
-                                        <div className="mb-[12px] shadow-md rounded-8 bg-white">
-                                            <img className='rounded-[10px] ' src='https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75' />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className="mb-[12px] shadow-md rounded-8 bg-white">
-                                            <img className='rounded-[10px]' src='https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75' />
-                                        </div>
-                                    </li>
+                                    {product?.images?.map((item: string) => (
+                                        <li>
+                                            <div className="mb-[12px] shadow-md rounded-8 bg-white">
+                                                <img className='rounded-[10px] max-w-[100px]' src={item} />
+                                            </div>
+                                        </li>
 
-                                    <li>
-                                        <div className="mb-[12px] shadow-md rounded-8 bg-white">
-                                            <img className='rounded-[10px]' src='https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75' />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className="mb-[12px] shadow-md rounded-8 bg-white">
-                                            <img className='rounded-[10px]' src='https://miki-jewelry.vercel.app/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fdoa5p4v4z%2Fimage%2Fupload%2Fv1664474358%2Fhrnt7z87vvzhqho1hxbd.jpg&w=384&q=75' />
-                                        </div>
-                                    </li>
+                                    )
 
+                                    )}
                                 </ul>
                             </div>
                         </div>
@@ -115,9 +111,9 @@ export default function ProductDetail({ product }: any) {
 
                                 </div>
                                 <p className="ml-[96px] inline-block font-bold">
-                                    {product.storage[size - 1]?.quantity === 0 ? (
+                                    {product?.storage?.[size - 1]?.quantity === 0 ? (
                                         <span className="text-red-500">Hết hàng</span>
-                                    ) : product.storage[size - 1]?.quantity <= 10 ? (
+                                    ) : product?.storage?.[size - 1]?.quantity <= 10 ? (
                                         <span className="text-red-500">Sắp hết hàng</span>
                                     ) : (
                                         <span className="text-[#58C27D]">Còn hàng</span>

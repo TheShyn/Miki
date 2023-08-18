@@ -1,8 +1,19 @@
+import { useAppDispatch } from '@/app/hooks';
+import { decrease, increase, removeCart } from '@/slices/CartUser';
 import FormatPrice from '@/utils/FormatPrice'
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineClose } from 'react-icons/ai'
 export default function CartItems({ cart }: any) {
-    console.log(cart);
-
+    const dispatch = useAppDispatch()
+    const removeToCart = (id:any)=>{
+        console.log(id);
+        dispatch(removeCart(id))
+    }
+    const increaseNumber = (id:any)=>{
+        dispatch(increase(id))
+    }
+    const decreaseNumber = (id:any)=>{
+        dispatch(decrease(id))
+    }
     return (
         <div className="flex flex-col">
             <h1 className="text-[24px] font-bold">Giỏ hàng</h1>
@@ -21,7 +32,7 @@ export default function CartItems({ cart }: any) {
                                 <div>
                                     <div className='mb-8 flex justify-between items-start'>
                                         <h3 className="text-[17px] md:text-[20px] font-bold">{item.name}</h3>
-                                        <button className="active:bg-black active:text-white active:rounded-full">
+                                        <button onClick={()=>removeToCart(item.product)} className="active:bg-black active:text-white active:rounded-full">
                                             <AiOutlineClose />
                                         </button>
                                     </div>
@@ -30,12 +41,12 @@ export default function CartItems({ cart }: any) {
                                 <div className='flex items-center justify-between flex-wrap mt-3'>
                                     <div className='flex items-center '>
                                         <button className="active:bg-black active:text-white active:rounded-full"
-
+                                            onClick={()=>decreaseNumber(item.product)}
                                         >
                                             <AiOutlineMinus />
                                         </button>
                                         <p className="text-[16px] md:text-[20px] font-bold leading-7 w-7 text-center mx-4">{item.quantity}</p>
-                                        <button className="active:bg-black active:text-white active:rounded-full">
+                                        <button onClick={()=>increaseNumber(item.product)} className="active:bg-black active:text-white active:rounded-full">
 
                                             <AiOutlinePlus />
                                         </button>

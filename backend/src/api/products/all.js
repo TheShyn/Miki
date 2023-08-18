@@ -5,8 +5,9 @@ const GetAll = async (req, res) => {
     await connect()
     const { method } = req
 
-    const { page, limit, category } = req.query;
-
+    const { page = 1, limit = 0, category } = req.query;
+    
+    
     switch (method) {
         case "GET":
             try {
@@ -14,7 +15,7 @@ const GetAll = async (req, res) => {
                 const totalItems = !category ? await Product.countDocuments() : await Product.countDocuments({ categoryId:category });
                 const totalPages = Math.ceil(totalItems / +limit)
                 
-                if (page == 0 || page > totalPages) return res.status(404).json({ success: false, message: 'No page found' });
+                if (page == 0 || page > totalPages) return res.status(404).json({ success: false, message: 'No page found', data:[] });
                 if (page || limit || category) {
                     const findInstance = {};
                     if (category) {findInstance.categoryId = category}
@@ -40,10 +41,6 @@ const GetAll = async (req, res) => {
                         }
                     )
                 }
-                const product = await Product.find().populate("categoryId");
-                console.log(product);
-                
-                return res.status(200).json({ success: true, data: product })
             } catch (error) {
                 return res.status(500).json({ message: error, success: false })
             }

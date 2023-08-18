@@ -1,20 +1,22 @@
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useGetUserQuery, useUpdateUserMutation } from "@/api/users";
+import { useAppDispatch } from "@/app/hooks";
 import Button from "@/components/Button";
 import FormProviderBox from "@/components/hook-form/FormProviderBox";
 import InputField from "@/components/hook-form/InputField";
 import { SelectOption } from "@/components/hook-form/SelectOption";
-import { getUser, updateUser } from "@/instance/User";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useEffect } from 'react'
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as yup from 'yup';
 type Props = {}
 
 export default function UpdateUser({ }: Props) {
   const { id } = useParams()
-  const dispatch = useAppDispatch()
-  const { user } = useAppSelector((state: any) => state.user)
+  const { data, isLoading } = useGetUserQuery(id)
+  const [updateUser] = useUpdateUserMutation()
+  const navigate = useNavigate()
+  // console.log(data);
   const phoneNumberRegExp = /(84|0[3|5|7|8|9])+([0-9]{8})\b/
   const schema = yup.object().shape({
     firstName: yup.string().required('Nhập tên đệm'),
@@ -26,15 +28,16 @@ export default function UpdateUser({ }: Props) {
     resolver: yupResolver(schema),
     reValidateMode: 'onBlur',
     defaultValues: {
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      email: user?.email,
-      role: user?.role,
-      birthday: user?.birthday?.substring(0, user?.birthday.indexOf('T')),
-      gender: user?.gender,
-      phoneNumber: user?.phoneNumber
+      firstName: data?.data?.firstName,
+      lastName: data?.data?.lastName,
+      email: data?.data?.email,
+      role: data?.data?.role,
+      birthday: data?.data?.birthday?.substring(0, data?.data?.birthday.indexOf('T')),
+      gender: data?.data?.gender,
+      phoneNumber: data?.data?.phoneNumber
     },
   });
+  if (isLoading) return <div>Loading...</div>
   const optionRole = [
     {
       value: 'admin',
@@ -47,29 +50,41 @@ export default function UpdateUser({ }: Props) {
   ]
   const { handleSubmit, reset, control } = methods;
   const onSubmit = async (data: any) => {
-    if(data){
+    if (data) {
       const dataUp = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: data.role,
-        phoneNumber: data.phoneNumber
+        id,
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: data.role,
+          phoneNumber: data.phoneNumber
+        }
       }
-      dispatch(updateUser({id, data:dataUp}))
+      console.log(dataUp);
+      
+      updateUser(dataUp).unwrap().then(()=>{
+        alert("User successfully  updated")
+        // navigate?
+      })
+      .catch((error:any) =>{
+        console.log(error);
+        
+      })
+
     }
 
   }
   useEffect(() => {
-    dispatch(getUser(`${id}`))
     reset({
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      email: user?.email,
-      role: user?.role,
-      birthday: user?.birthday?.substring(0, user?.birthday.indexOf('T')),
-      gender: user?.gender,
-      phoneNumber: user?.phoneNumber
+      firstName: data?.data?.firstName,
+      lastName: data?.data?.lastName,
+      email: data?.data?.email,
+      role: data?.data?.role,
+      birthday: data?.data?.birthday?.substring(0, data?.data?.birthday.indexOf('T')),
+      gender: data?.data?.gender,
+      phoneNumber: data?.data?.phoneNumber
     })
-  }, [user?.firstName])
+  }, [isLoading])
   return (
     <div className='mt-[50px]'>
       <div className='flex justify-between items-center flex-wrap'>

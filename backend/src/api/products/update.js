@@ -11,7 +11,7 @@ const UpdateProduct = async (req, res) => {
     const method = req.method
     const { id } = req.params
     let data = req.body
-    const { imgs } = req.body
+    const { images } = req.body
     //check id valid
 
     // res.send(data)
@@ -22,45 +22,45 @@ const UpdateProduct = async (req, res) => {
                 const { categoryId } = data
                 let { error } = SchemaProductUpdate.validate(data)
                 if (error) {
-                    // if (imgs.length) {
-                    //     const arrayImg = imgs.map(item => {
-                    //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
-                    //         return "products/" + fileName
-                    //     })
-                    //     cloudinary.api.delete_resources(arrayImg)
-                    // }
+                    if (images.length) {
+                        const arrayImg = images.map(item => {
+                            const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
+                            return "products/" + fileName
+                        })
+                        cloudinary.api.delete_resources(arrayImg)
+                    }
                     return res.status(400).send({ message: error.message });
                 }
                 const product = await Product.findOne({ _id: id })
                 if (!product) {
-                    // if (imgs.length) {
-                    //     const arrayImg = imgs.map(item => {
-                    //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
-                    //         return "products/" + fileName
-                    //     })
-                    //     cloudinary.api.delete_resources(arrayImg)
-                    // }
+                    if (images.length) {
+                        const arrayImg = images.map(item => {
+                            const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
+                            return "products/" + fileName
+                        })
+                        cloudinary.api.delete_resources(arrayImg)
+                    }
                     return res.status(404).send({ message: "Product not found" });
                 }
 
                 const isCate = await Categories.findOne({ _id: categoryId })
                 if (!isCate) {
-                    // if (imgs.length) {
-                    //     const arrayImg = imgs.map(item => {
-                    //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
-                    //         return "products/" + fileName
-                    //     })
-                    //     cloudinary.api.delete_resources(arrayImg)
-                    // }
+                    if (images.length) {
+                        const arrayImg = images.map(item => {
+                            const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
+                            return "products/" + fileName
+                        })
+                        cloudinary.api.delete_resources(arrayImg)
+                    }
                     return res.status(404).send({ message: "Categories not found" });
                 }
                 // data = {
                 //     ...data,
-                //     img: product.imgs[0],
-                //     imgs: product.imgs
+                //     img: product.images[0],
+                //     images: product.images
                 // }
-                // if (imgs.length > 0) {
-                //     const arrayImg = product.imgs.map(item => {
+                // if (images.length > 0) {
+                //     const arrayImg = product.images.map(item => {
                 //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
                 //         return "products/" + fileName
                 //     })
@@ -69,8 +69,8 @@ const UpdateProduct = async (req, res) => {
                 //     cloudinary.api.delete_resources(arrayImg)
                 //     data = {
                 //         ...data,
-                //         img: imgs[0],
-                //         imgs: imgs
+                //         img: images[0],
+                //         images: images
                 //     }
                 // }
                 const checkCate = await Categories.findOne({_id: data.categoryId})
@@ -91,8 +91,8 @@ const UpdateProduct = async (req, res) => {
                 });
                 return res.status(200).send({ message: "Update product successfully", data: productUpdate })
             } catch (error) {
-                // if (imgs.length) {
-                //     const arrayImg = imgs.map(item => {
+                // if (images.length) {
+                //     const arrayImg = images.map(item => {
                 //         const fileName = item.split('/').pop().replace(/\.[^/.]+$/, '');
                 //         return "products/" + fileName
                 //     })

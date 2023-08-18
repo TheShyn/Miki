@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import buttonStyle from './button.module.css'
 interface IButton {
-  content: string,
+  content: any,
   style?: string,
   styleLeftIcon?: string,
   leftIcon?: React.ReactNode,

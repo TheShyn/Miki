@@ -1,14 +1,13 @@
-import Button from '@/components/Button'
-import FormatPrice from '@/utils/FormatPrice'
-import React from 'react'
+import Button from '@/components/Button';
+import FormatPrice from '@/utils/FormatPrice';
 
 export default function TotalCart({cart}:any) {
     console.log(cart);
-    const totalPrice = cart.reduce((initState:any,currenIndex:any)=>{
-        return (initState?.quantity * initState?.price) + (currenIndex?.quantity * currenIndex?.price)
-    })
-    console.log(totalPrice);
-    
+    const totalPrice = cart.reduce((accumulator:any, currentValue:any) => {
+        const a = (accumulator + (currentValue?.quantity * currentValue?.price));
+        console.log(a);
+        return accumulator + (currentValue?.quantity * currentValue?.price);
+    }, 0);    
   return (
     <div>
     <h1 className="text-[24px] mb-[48px] font-bold">Tạm tính</h1>

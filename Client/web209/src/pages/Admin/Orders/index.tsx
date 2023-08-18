@@ -1,15 +1,19 @@
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { getAllOrder, updateOrder } from '@/instance/Cart'
-import { useEffect } from 'react'
+import { useGetAllOrdersQuery, useUpdateOrdersMutation } from '@/api/orders'
+import Pagination from '@/components/Panigation'
+import { useEffect, useState } from 'react'
 import { AiOutlineSearch } from "react-icons/ai"
+import { useLocation } from 'react-router-dom'
 type Props = {}
 
 export default function OrderMana({ }: Props) {
-    const data = useAppSelector((state: any) => state.cart)
-    console.log(data);
-    const dipatch = useAppDispatch()
+    const [page, setPage] = useState<any>(1)
+    const {data, isLoading} = useGetAllOrdersQuery({page:page,limit: 3})
+    const [updateOrders] = useUpdateOrdersMutation()
+    const location = useLocation()
+    const searchParams = new URLSearchParams(location.search);
+    
     const status = [
-        {
+        { 
             name: "PENDING"
         },
         {
@@ -27,13 +31,28 @@ export default function OrderMana({ }: Props) {
         console.log(e.target.value);
         console.log(id);
         const data:any = {
-            status : e.target.value
+            data: {
+                status : `${e.target.value}`
+            },
+            id
+            
         }
-        dipatch(updateOrder({id, data}))
+        updateOrders(data).unwrap().then((data)=>{
+            console.log(data);
+            
+            console.log("update order status ",);
+            
+        }).catch((err)=>{
+            console.log(err);
+            
+        })
+        
     }
-    useEffect(()=>{
-        dipatch(getAllOrder())
-    },[])
+    useEffect(() => {
+        let tempPage
+        if (searchParams.has('page')) tempPage = searchParams.get('page');
+        setPage(tempPage)
+    }, [location.search])
     return (
         <div className='mt-[50px]'>
             <div className='flex justify-between items-center flex-wrap'>
@@ -62,10 +81,10 @@ export default function OrderMana({ }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.carts.map((item: any, index: string) => {
+                        {data?.carts?.map((item: any, index: string) => {
                             return (
 
-                                <tr key={index} className="bg-white border-b ">
+                                <tr key={item._id} className="bg-white border-b ">
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
                                         {item._id.slice(0,5)}
                                     </th>
@@ -92,6 +111,7 @@ export default function OrderMana({ }: Props) {
                     </tbody>
                 </table>
             </div>
+            <Pagination pageCount={data?.totalPages} scroll={600} />
         </div>
 
 

@@ -1,15 +1,35 @@
 import { Link, useLocation } from 'react-router-dom'
 import { AiOutlineShoppingCart, AiOutlineBars, AiOutlineSearch, AiOutlineBell, AiOutlineUser } from 'react-icons/ai'
 import { useEffect, useState } from 'react'
+import { useAppSelector } from '@/app/hooks'
 export default function Header() {
+    const data = useAppSelector((state:any)=>state.user)
+    console.log(data.isLogin);
+    
     const [page, setPage] = useState("/")
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
     const location = useLocation()
-    useEffect(()=>{
+    useEffect(() => {
         const get = `${location.pathname.split("/").pop()}`
         setPage(get || '/');
-        
-    },[location])
-    
+
+    }, [location])
+    useEffect(() => {
+        const handleClickOutside = (event:any) => {
+            if (isDropdownOpen && !event.target.closest('#dropdownInformationButton')) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isDropdownOpen]);
     return (
         <>
             <header>
@@ -18,17 +38,17 @@ export default function Header() {
                         <ul className="md:flex md:justify-between hidden md:gap-[10px] lg:gap-[42px]">
                             <li className="py-[4px]">
                                 <Link to="/">
-                                    <a className={`text-16 hover:text-3rd-text  ${page == '/' ? 'font-bold': ''}`}>Trang chủ</a>
+                                    <a className={`text-16 hover:text-3rd-text  ${page == '/' ? 'font-bold' : ''}`}>Trang chủ</a>
                                 </Link>
                             </li>
                             <li className="py-[4px]">
                                 <Link to="/products">
-                                    <a className={`text-16 hover:text-3rd-text  ${page == 'products' ? 'font-bold': ''}`}>Sản phẩm</a>
+                                    <a className={`text-16 hover:text-3rd-text  ${page == 'products' ? 'font-bold' : ''}`}>Sản phẩm</a>
                                 </Link>
                             </li>
                             <li className="py-[4px]">
                                 <Link to="/aboutus/brandandhistory">
-                                    <a className={`text-16 hover:text-3rd-text  ${page == 'brandandhistory' ? 'font-bold': ''}`}>Về chúng tôi</a>
+                                    <a className={`text-16 hover:text-3rd-text  ${page == 'brandandhistory' ? 'font-bold' : ''}`}>Về chúng tôi</a>
                                 </Link>
                             </li>
                         </ul>
@@ -62,10 +82,9 @@ export default function Header() {
 
                             </li>
                             <li className='hidden lg:block'>
-                                <Link to="/admin/products">
+                                <Link to="/cart">
                                     <span className='text-[20px]'>
                                         <AiOutlineShoppingCart />
-
                                     </span>
                                 </Link>
                             </li>
@@ -78,10 +97,26 @@ export default function Header() {
                                 </Link>
                             </li>
                             <li className='hidden md:block'>
-                                <Link to="/aboutus/brandandhistory">
-                                    <span className='text-[20px]'>
-                                        <AiOutlineUser />
-
+                                <Link to={`${data.isLogin ? "#" : '/auth'}`}>
+                                    <span className='text-[20px] flex relative'>
+                                        <button id="dropdownInformationButton" onClick={toggleDropdown} data-dropdown-toggle="dropdownInformation" type="button">
+                                            <AiOutlineUser />
+                                        </button>
+                                        {isDropdownOpen && data.isLogin && (
+                                            <div className="absolute z-10 top-[130%] right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 ">
+                                                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
+                                                    <li>
+                                                        <a href="#" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">Thông tin cá nhân</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" className="block px-4 py-2 hover:bg-gray-100 text-gray-700">Đơn hàng</a>
+                                                    </li>
+                                                </ul>
+                                                <div className="py-2">
+                                                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ">Sign out</a>
+                                                </div>
+                                            </div>
+                                        )}
                                     </span>
                                 </Link>
                             </li>
