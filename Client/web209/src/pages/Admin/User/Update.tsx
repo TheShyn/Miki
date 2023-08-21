@@ -1,5 +1,4 @@
 import { useGetUserQuery, useUpdateUserMutation } from "@/api/users";
-import { useAppDispatch } from "@/app/hooks";
 import Button from "@/components/Button";
 import FormProviderBox from "@/components/hook-form/FormProviderBox";
 import InputField from "@/components/hook-form/InputField";
@@ -8,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from 'react-toastify';
 import * as yup from 'yup';
 type Props = {}
 
@@ -61,15 +61,19 @@ export default function UpdateUser({ }: Props) {
         }
       }
       console.log(dataUp);
-      
-      updateUser(dataUp).unwrap().then(()=>{
-        alert("User successfully  updated")
+
+      updateUser(dataUp).unwrap().then(() => {
+        toast.success("Lưu thành công")
+
+        setTimeout(() => {
+          navigate('/admin/users')
+        }, 2000);
         // navigate?
       })
-      .catch((error:any) =>{
-        console.log(error);
-        
-      })
+        .catch((error: any) => {
+          console.log(error);
+          toast.error(error?.data?.message || "some thing error");
+        })
 
     }
 

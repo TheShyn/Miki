@@ -1,14 +1,12 @@
 import { useAddCategoryMutation } from "@/api/categories";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Button from "@/components/Button";
 import FormProviderBox from "@/components/hook-form/FormProviderBox";
 import InputField from "@/components/hook-form/InputField";
-import { addCate } from "@/instance/Categories";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineLoading3Quarters, AiOutlineSearch } from "react-icons/ai";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 import * as yup from 'yup';
 type Props = {}
 
@@ -33,7 +31,16 @@ export default function AddCate({ }: Props) {
         console.log(data);
         if(data){
             addCate(data).unwrap().then(()=>{
-                navigate("/admin/categories")
+                toast.success("Thêm thành công")
+                setTimeout(() => {
+                    navigate("/admin/categories")
+                    
+                }, 2000);
+            })
+            .catch((error)=>{
+                console.log(error);
+                toast.error(error?.data?.message || "some thing error");
+
             })
         }
        

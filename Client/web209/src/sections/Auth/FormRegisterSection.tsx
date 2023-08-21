@@ -5,11 +5,13 @@ import InputField from '@/components/hook-form/InputField'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+import { toast } from 'react-toastify';
 
 export default function FormRegisterSection() {
     const [register] = useRegisterMutation()
+    const navigate = useNavigate()
     const schema = yup.object().shape({
         firstName: yup.string().required('Vui lòng nhập họ'),
         lastName: yup.string().required('Vui lòng nhập tên'),
@@ -40,11 +42,15 @@ export default function FormRegisterSection() {
             register(data)
                 .then((response) => {
                     console.log(response);
-
+                    toast.success("Đăng ký thành công");
+                    setTimeout(() => {
+                        navigate('/auth/login')
+                        
+                    }, 2000);
                 })
                 .catch((error) => {
                     console.log(error);
-                    
+                    toast.error(error?.data?.message || "some thing error");
                 })
         }
     }

@@ -70,17 +70,16 @@ export default function ProductDetail({ product }: any) {
             <section className="text-gray-700 bg-bgr body-font">
                 <div className="container py-24 mx-auto">
                     <div className="lg:w-4/5 mx-auto flex flex-wrap">
-                        <div className='w-full lg:w-1/2 flex flex-col items-center'  >
+                        <div className='w-full lg:w-1/2 flex flex-col'  >
                             <img alt="ecommerce" className="w-full object-cover object-center rounded-[10px] border border-gray-200" src={product?.images?.[0]} />
                             <div className="mt-3 overflow-x-scroll" >
-                                <ul className='flex gap-4'>
+                                <ul className='flex gap-4 justify-start'>
                                     {product?.images?.map((item: string) => (
                                         <li>
                                             <div className="mb-[12px] shadow-md rounded-8 bg-white">
                                                 <img className='rounded-[10px] max-w-[100px]' src={item} />
                                             </div>
                                         </li>
-
                                     )
 
                                     )}

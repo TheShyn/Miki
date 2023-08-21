@@ -1,26 +1,25 @@
 import { useGetCategoryByIdQuery, useUpdateCategoryMutation } from "@/api/categories";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Button from "@/components/Button";
 import FormProviderBox from "@/components/hook-form/FormProviderBox";
 import InputField from "@/components/hook-form/InputField";
-import { addCate, getOneCate, updateCate } from "@/instance/Categories";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from 'react-toastify';
 import * as yup from 'yup';
 type Props = {}
 
 export default function UpdateCate({ }: Props) {
-    const {id} = useParams()
-    const {data, isLoading,refetch} = useGetCategoryByIdQuery(id)
+    const { id } = useParams()
+    const { data, isLoading, refetch } = useGetCategoryByIdQuery(id)
     const navigate = useNavigate()
-    
-    const [updateCate, {isLoading:loadingUpdate}] = useUpdateCategoryMutation()
+
+    const [updateCate, { isLoading: loadingUpdate }] = useUpdateCategoryMutation()
     const schema = yup.object().shape({
         name: yup.string().required('Nhập tên loại sản phẩm'),
- 
+
     });
     const methods = useForm({
         resolver: yupResolver(schema),
@@ -29,7 +28,7 @@ export default function UpdateCate({ }: Props) {
             name: data?.data?.name
         },
     });
-    const { handleSubmit, reset, control  } = methods;
+    const { handleSubmit, reset, control } = methods;
     //
     //submit
     const onSubmit = async (data: any) => {
@@ -37,24 +36,28 @@ export default function UpdateCate({ }: Props) {
             id: id,
             data
         }
-        if(data){
-            updateCate(dataUp).unwrap().then(()=>{
+        if (data) {
+            updateCate(dataUp).unwrap().then(() => {
                 refetch()
-               navigate('/admin/categories')
+                toast.success("Lưu thành công")
                 
-            }).catch((error)=>{
+                setTimeout(() => {
+                    navigate('/admin/categories')
+                }, 2000);
+            }).catch((error) => {
                 console.log(error);
-                
+                toast.error(error?.data?.message || "some thing error");
+
             })
         }
-       
+
     }
     useEffect(() => {
-        reset({ name: data?.data?.name }); 
+        reset({ name: data?.data?.name });
     }, [isLoading])
     return (
         <div className='mt-[50px]'>
-           
+
             <div className='flex justify-between items-center flex-wrap'>
                 <h1 className='mb-5 text-2xl'>Sửa sản phẩm</h1>
                 <div className='bg-white flex items-center px-2 rounded-8 py-1 border border-1 boder-#ccc'>

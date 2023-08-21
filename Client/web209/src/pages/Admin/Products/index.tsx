@@ -3,11 +3,12 @@ import Pagination from '@/components/Panigation'
 import { useEffect, useState } from 'react'
 import { AiOutlineLoading3Quarters, AiOutlinePlus, AiOutlineSearch } from "react-icons/ai"
 import { Link, useLocation } from 'react-router-dom'
+import { toast } from 'react-toastify'
 type Props = {}
 
 export default function ProductsMana({ }: Props) {
     const [page, setPage] = useState<any>(1)
-    const { data, isLoading } = useGetProductsQuery({ limit: 1, page: page }) 
+    const { data, isLoading } = useGetProductsQuery({ limit: 1, page: page })
     const [removeProduct, { isLoading: loadingDelete }] = useRemoveProductMutation()
     const [indexDelete, setIndexDelete] = useState<any>()
     const handleDelete = (id: string) => {
@@ -16,6 +17,8 @@ export default function ProductsMana({ }: Props) {
         if (a) {
             // dipatch(deleteProduct(id))
             removeProduct(id)
+            toast.success("Xóa thành công")
+
         }
     }
     const location = useLocation()

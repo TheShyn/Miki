@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { AiOutlineLoading3Quarters, AiOutlinePlus, AiOutlineSearch } from "react-icons/ai"
 import { Link, useLocation } from 'react-router-dom'
 type Props = {}
+import { toast } from 'react-toastify';
 
 export default function CategoriesMana({ }: Props) {
 
@@ -21,8 +22,9 @@ export default function CategoriesMana({ }: Props) {
         const a = confirm("Bạn có muốn loại sản phẩm này không ? ")
         if (a) {
             // dipatch(deleteCate(id))
-            await deleteCate(id).unwrap().then((data)=>{
+            deleteCate(id).unwrap().then((data)=>{
                 console.log(data);
+                toast.success("Xóa thành công")
                 
             })
         }

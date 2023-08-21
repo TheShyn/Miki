@@ -132,8 +132,8 @@ export default function FeedbackContainer({ id = 'asdasda' }: Props) {
                                 ))
 
                                 :
-                                <div className='flex min-w-[850px]'>
-                                    <span className='text-2xl text-red-400 italic'>Hiện tại, chưa có đánh giá nào. Đánh giá ngay !</span>
+                                <div className='flex'>
+                                    <p className='text-2xl text-red-400 italic'>Hiện tại, chưa có đánh giá nào. Đánh giá ngay !</p>
                                 </div>
                             }
                         </div>

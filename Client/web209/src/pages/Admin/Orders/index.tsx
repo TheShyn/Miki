@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { AiOutlineSearch } from "react-icons/ai"
 import { useLocation } from 'react-router-dom'
 type Props = {}
+import { toast } from 'react-toastify';
+
 
 export default function OrderMana({ }: Props) {
     const [page, setPage] = useState<any>(1)
@@ -40,10 +42,12 @@ export default function OrderMana({ }: Props) {
         updateOrders(data).unwrap().then((data)=>{
             console.log(data);
             
-            console.log("update order status ",);
+            toast.success("Lưu thành công")
+
             
         }).catch((err)=>{
             console.log(err);
+            toast.error(err?.data?.message || "some thing error");
             
         })
         

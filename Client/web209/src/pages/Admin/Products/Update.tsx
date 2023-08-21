@@ -13,6 +13,7 @@ import { AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
 import {AiOutlineLoading3Quarters} from 'react-icons/ai'
 import * as yup from 'yup';
+import {toast} from "react-toastify"
 type Props = {}
 
 export default function UpdateProduct({ }: Props) {
@@ -103,12 +104,17 @@ export default function UpdateProduct({ }: Props) {
             }
 
             await updateProduct(dataUpdate).unwrap().then(()=>{
-                navigate("/admin/products")
+                toast.success("Thêm thành công")
+                setTimeout(() => {
+                    navigate("/admin/products")
+                    
+                }, 2000);
+
 
             })
             .catch((error)=>{
                 console.log(error);
-                
+                toast.error(error?.data?.message || "some thing error");
             })
 
         }

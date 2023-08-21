@@ -1,14 +1,14 @@
 import { useLoginMutation } from '@/api/auth';
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import Button from '@/components/Button'
-import FormProviderBox from '@/components/hook-form/FormProviderBox'
-import InputField from '@/components/hook-form/InputField'
-import { authLogin, login } from '@/instance/Auth';
+import { useAppDispatch } from '@/app/hooks';
+import Button from '@/components/Button';
+import FormProviderBox from '@/components/hook-form/FormProviderBox';
+import InputField from '@/components/hook-form/InputField';
 import { getCartUser } from '@/slices/CartUser';
 import { getUser } from '@/slices/User';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
 export default function FormLoginSection() {
@@ -38,12 +38,16 @@ export default function FormLoginSection() {
                     ...data.user
                 }
                 console.log('loginSuccess');
-                navigate('/')
                 dispatch(getUser(dataUser))
                 dispatch(getCartUser(data?.user?.cart))
+                toast.success("Đăng nhập thành công");
+                setTimeout(() => {
+                    navigate('/')
+                    
+                }, 2000);
             }).catch((error:any) => {
                 console.log(error);
-                console.log(error.data.message)
+                toast.error(error?.data?.message || "some thing error");
             })
 
         }

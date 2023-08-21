@@ -9,7 +9,7 @@ export default function UserMana({ }: Props) {
     if(isLoading) return <div>Loading....</div>
     const handleDelete = (id: string) => {
 
-        const a = confirm("Bạn có muốn loại sản phẩm này không ? ")
+        const a = confirm("Bạn có muốn xóa người dùng này không ? ")
         if (a) {
             // dipatch(deleteCate(id))
 
@@ -18,7 +18,7 @@ export default function UserMana({ }: Props) {
     return (
         <div className='mt-[50px]'>
             <div className='flex justify-between items-center flex-wrap'>
-                <h1 className='mb-5 text-2xl'>Quản lí sản phẩm</h1>
+                <h1 className='mb-5 text-2xl'>Quản lí người dùng</h1>
                 <div className='bg-white flex items-center px-2 rounded-8 py-1 border border-1 boder-#ccc'>
                     <input placeholder='Search...' className='text-black outline-none border-none' type="text" />
                     <AiOutlineSearch className='text-black' />
@@ -70,7 +70,7 @@ export default function UserMana({ }: Props) {
                                     </th>
 
                                     <td className="px-6 py-4">
-                                        <div className={`flex flex-wrap gap-3 `}>
+                                        <div className={`flex flex-wrap gap-3 ${item.role ==='admin' ? 'hidden' : ""}`}>
                                             <button className={`${item._id === '64822a45fe4657527476ecd9' ? 'hidden' : ''}`} onClick={() => handleDelete(item._id)}>Delete</button>
                                             <button >
                                                 <Link to={`/admin/users/edit/${item?._id}`}>
@@ -82,7 +82,7 @@ export default function UserMana({ }: Props) {
                                 </tr>
                             )
                         })}
-{/* ${item.role ==='admin' ? 'hidden' : ""} */}
+{/*  */}
 
                     </tbody>
                 </table>

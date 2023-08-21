@@ -1,6 +1,5 @@
 import { useGetCategoriesQuery } from "@/api/categories";
 import { useAddProductMutation } from "@/api/products";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import Button from "@/components/Button";
 import FormProviderBox from "@/components/hook-form/FormProviderBox";
 import InputField from "@/components/hook-form/InputField";
@@ -13,6 +12,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { AiOutlineCloudUpload, AiOutlineLoading3Quarters, AiOutlineSearch } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import * as yup from 'yup';
+import { toast } from 'react-toastify';
 type Props = {}
 
 export default function AddProduct({ }: Props) {
@@ -99,12 +99,16 @@ export default function AddProduct({ }: Props) {
 
                 await addProduct(dataUp).unwrap().then(()=>{
                     reset()
-                    navigate("/admin/products")
+                    toast.success("Thêm thành công")
+                    setTimeout(() => {
+                        navigate("/admin/products")
+                        
+                    }, 2000);
 
                 })
                 .catch((error)=>{
                     console.log(error);
-                    
+                    toast.error(error?.data?.message || "some thing error");
                 })
 
         }
